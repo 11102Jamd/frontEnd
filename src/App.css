@@ -13,11 +13,13 @@ body {
     text-align: center;
     color: white;
     background-color: #2d3436;
+    height: 40px;
 }
 
 .app-container{
     display: flex;
     min-height: 100vh;
+    border: 10px;
 }
 /* Sidebar */
 .sidebar {
@@ -29,12 +31,32 @@ body {
     height: 100%;
     min-height: 100vh;
 }
+.icono-grande {
+    font-size: 5rem; 
+    margin-bottom: 5px;
+    margin-left: 65px;
+    justify-content: center;
 
+}
+.sidebar ul{
+    list-style: none;
+    padding-left: 0;
+}
+.sidebar li{
+    margin-bottom: 20px;
+    margin-left: 60px;
+}
 .sidebar-link {
     border-radius: 5px;
     margin-bottom: 5px;
     transition: all 0.2s;
     color: #f5f6fa;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+.sidebar-link i{
+    margin-right: 8px;
 }
 
 .sidebar-link:hover {
@@ -233,7 +255,7 @@ select{
     border: 1px solid #ccc;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     border-radius: 8px;
-    width: 800px;
+    width: 500px;
     letter-spacing: 5;
 }
 
@@ -243,6 +265,7 @@ select{
     min-width: 130px;  
     display: inline-block;
 }
+
 
 
 

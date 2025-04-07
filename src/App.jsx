@@ -18,19 +18,18 @@ import './App.css';
 function App() {
     return (
         <Router>
-          <Header/>
             <div className="app-container">
                 <Sidebar />
                 <MainContent>
-                    <Routes>
-                        <Route path="/" element={<h1>Bienvenido</h1>} />
-                        <Route path="/usuarios" element={<Usuarios />} />
-                        <Route path="/productos" element={<Productos />} />
-                        <Route path="/pedidos" element={<Pedidos />} />
-                        <Route path="/proveedores" element={<Proveedor />} />
-                        <Route path="/insumos" element={<Insumos />} />
-                        <Route path="/compras" element={<Compras />} />
-                    </Routes>
+                        <Routes>
+                            <Route path="/" element={<h1>Bienvenido</h1>} />
+                            <Route path="/usuarios" element={<Usuarios />} />
+                            <Route path="/productos" element={<Productos />} />
+                            <Route path="/pedidos" element={<Pedidos />} />
+                            <Route path="/proveedores" element={<Proveedor />} />
+                            <Route path="/insumos" element={<Insumos />} />
+                            <Route path="/compras" element={<Compras />} />
+                        </Routes>
                 </MainContent>
             </div>
             <Footer />
