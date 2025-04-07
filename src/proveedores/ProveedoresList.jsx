@@ -34,7 +34,7 @@ function Proveedor(){
     return(
         <div>
             <h1>Gestión de Proveedores</h1>
-            <button onClick={() => setMostrarModal(true)}>Crear Proveedor</button>
+            <button onClick={() => setMostrarModal(true)} className="button-new">Crear Proveedor</button>
 
             <h2>Lista de Provedores</h2>
             <table border="1">

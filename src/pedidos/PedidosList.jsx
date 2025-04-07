@@ -33,7 +33,7 @@ function Pedidos() {
     return (
         <div>
             <h1>Gestión de Pedidos</h1>
-            <button onClick={() => setMostrarModal(true)}>Crear Pedido</button>
+            <button onClick={() => setMostrarModal(true)} className='button-new'>Crear Pedido</button>
 
             <h2>Lista de Pedidos</h2>
             <table border="1">

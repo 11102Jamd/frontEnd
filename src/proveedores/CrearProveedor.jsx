@@ -29,7 +29,7 @@ function CrearProveedorModal({ onClose, onProveedorCreado}){
     }
 
     return(
-        <div className="modal">
+        <div className="form-modal">
             <h2>Crear Proveedor</h2>
             <input type="text" placeholder="Empresa o Nombre" value={nuevoProveedor.name} onChange={(e) => setNuevoProveedor({ ...nuevoProveedor, name: e.target.value })} required />
             <br />
@@ -39,8 +39,8 @@ function CrearProveedorModal({ onClose, onProveedorCreado}){
             <br />
             <input type="number" placeholder="Telefono" value={nuevoProveedor.Phone} onChange={(e) => setNuevoProveedor({ ...nuevoProveedor, Phone: e.target.value })} required />
             <br />
-            <button onClick={crearProveedor}>Guardar</button>
-            <button onClick={onClose}>Cerrar</button>
+            <button onClick={crearProveedor} className="button-save">Guardar</button>
+            <button onClick={onClose} className="button-close">Cerrar</button>
         </div>
     );
 }

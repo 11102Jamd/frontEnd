@@ -33,7 +33,7 @@ function Productos() {
     return (
         <div>
             <h1>Gestión de Productos</h1>
-            <button onClick={() => setMostrarModal(true)}>Crear Producto</button>
+            <button onClick={() => setMostrarModal(true)} className='button-new'>Crear Producto</button>
 
             <h2>Lista de Productos</h2>
             <table border="1">

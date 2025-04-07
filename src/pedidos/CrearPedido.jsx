@@ -74,11 +74,11 @@ function CrearPedidoModal({ onClose, onPedidoCreado }) {
 
     return (
         <div className="modal">
-            <div className="modal-content">
+            <div className="form-row">
                 <h2>Crear Pedido</h2>
                 <label>Seleccionar Producto:</label>
                 <select value={productoSeleccionado} onChange={(e) => setProductoSeleccionado(e.target.value)}>
-                    <option value="">-- Seleccionar --</option>
+                    <option value=""> Seleccionar </option>
                     {productos.map((producto) => (
                         <option key={producto.id} value={producto.id}>
                             {producto.ProductName} (Stock: {producto.CurrentStock})
@@ -86,13 +86,14 @@ function CrearPedidoModal({ onClose, onPedidoCreado }) {
                     ))}
                 </select>
 
+                <label> Cantidad </label>
                 <input 
                     type="number" 
                     value={cantidad} 
                     onChange={(e) => setCantidad(parseInt(e.target.value, 10) || 1)} 
                     min="1" 
                 />
-                <button onClick={agregarProducto}>Agregar Producto</button>
+                <button onClick={agregarProducto} className='button-sum'>Agregar Producto</button>
 
                 <h3>Detalles del Pedido</h3>
                 <ul>
@@ -103,8 +104,8 @@ function CrearPedidoModal({ onClose, onPedidoCreado }) {
                     ))}
                 </ul>
 
-                <button onClick={crearPedido}>Guardar Pedido</button>
-                <button onClick={onClose}>Cerrar</button>
+                <button onClick={crearPedido} className='button-save'>Guardar Pedido</button>
+                <button onClick={onClose} className='button-close'>Cerrar</button>
             </div>
         </div>
     );

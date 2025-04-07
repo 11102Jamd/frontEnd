@@ -1,0 +1,248 @@
+/* Estilos generales */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.header{
+    text-align: center;
+    color: #f5f6fa;
+    background-color: #2d3436;
+    height: 50px;
+    width: 100%;
+}
+.footer{
+    text-align: center;
+    color: white;
+    background-color: #2d3436;
+}
+
+.app-container{
+    display: flex;
+    min-height: 100vh;
+}
+/* Sidebar */
+.sidebar {
+    transition: all 0.3s;
+    width: 250px;
+    min-height: 100vh;
+    background-color: #2d3436;
+    color: #f5f6fa;
+    height: 100%;
+    min-height: 100vh;
+}
+
+.sidebar-link {
+    border-radius: 5px;
+    margin-bottom: 5px;
+    transition: all 0.2s;
+    color: #f5f6fa;
+}
+
+.sidebar-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.sidebar-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    font-weight: bold;
+}
+
+/* Main Content */
+.main-content {
+    transition: all 0.3s;
+    flex-grow: 1;
+    padding: 20px;
+    min-height: calc(100vh - 50px);
+}
+
+/* Cards personalizadas */
+.custom-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.custom-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Botones */
+.btn-custom {
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+:root {
+    --primary-color: #7f8c8d;
+    --secondary-color: #bdc3c7;
+    --dark-color: #2d3436;
+    --light-color: #f5f6fa;
+  }
+
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar .nav-link.active {
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+/* Estilos para el Usuario */
+.user-list{
+    overflow-x: auto;
+}
+.user-table, th, td{
+    border: 1;
+    text-align: center;
+    padding: 15px;
+}
+th{
+    background-color: #2d3436;
+    color: #f5f6fa;
+}
+tr:hover{
+    background-color: aqua;
+}
+
+.form-modal{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000; 
+    background-color: #2d3436;
+    color: #f5f6fa;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    width: 300px;
+}
+/* Estilo para botones y entradas */
+input{
+    width: 100%;
+    height: 20px;
+    border: 2px solid white;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+select{
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    background-color: #f1f1f1;
+}
+.button-save{
+    background-color: #1e88e5;
+    color: #f5f6fa;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+.button-save:hover{
+    background-color: #90caf9;
+}
+
+.button-close{
+    background-color: #C70039;
+    color: #f5f6fa;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+.button-close:hover{
+    background-color: #FF5733;
+}
+
+.button-new{
+    background-color: #27ae60;
+    color: #f5f6fa;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+.button-new:hover{
+    background-color: #abebc6;
+}
+
+.button-sum{
+    background-color: #27ae60;
+    color: #f5f6fa;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+.button-sum:hover{
+    background-color: #abebc6;
+}
+/*Se aplica el mismo estilo a formularios de muchos Productos o Insumos*/
+
+.form-row {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000; 
+    background-color: #2d3436;
+    color: #f5f6fa;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    width: 700px;
+    letter-spacing: 5;
+}
+.form-row label {
+    margin-left: 10px;
+    margin-right: 10px; 
+    min-width: 130px;  
+    display: inline-block;
+}
+
+.form-row select,
+.form-row input {
+    flex: 1; 
+    width: 150px;
+    height: 40px;
+    padding: 8px;
+    font-size: 14px;
+}
+/*Formulario estilo css compras*/
+
+.form-compras {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000; 
+    background-color: #2d3436;
+    color: #f5f6fa;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    width: 800px;
+    letter-spacing: 5;
+}
+
+.form-compras label {
+    margin-left: 10px;
+    margin-right: 10px; 
+    min-width: 130px;  
+    display: inline-block;
+}
+
+
+

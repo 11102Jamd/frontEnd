@@ -28,7 +28,7 @@ function CrearProductoModal({ onClose, onProductoCreado }) {
     };
 
     return (
-        <div className="modal">
+        <div className="form-modal">
             <h2>Crear Producto</h2>
             <input type="text" name="ProductName" placeholder="Nombre Producto" value={nuevoProducto.ProductName} onChange={(e) => setNuevoProducto({ ...nuevoProducto, ProductName: e.target.value })} required/>
             <br />
@@ -38,8 +38,8 @@ function CrearProductoModal({ onClose, onProductoCreado }) {
             <br />
             <input type="number" name="UnityPrice" placeholder="Precio Unidad" value={nuevoProducto.UnityPrice} onChange={(e) => setNuevoProducto({ ...nuevoProducto, UnityPrice: e.target.value })} required/>
             <br />
-            <button onClick={crearProducto}>Guardar</button>
-            <button onClick={onClose}>Cerrar</button>
+            <button onClick={crearProducto} className='button-save'>Guardar</button>
+            <button onClick={onClose} className='button-close'>Cerrar</button>
         </div>
     );
 }

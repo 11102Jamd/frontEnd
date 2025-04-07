@@ -35,7 +35,7 @@ function Compras(){
     return (
         <div>
             <h1>Gestión de Compras</h1>
-            <button onClick={() => setMostrarModal(true)}>Crear Compra</button>
+            <button onClick={() => setMostrarModal(true)} className="button-new">Crear Compra</button>
 
             <h2>Lista de Compras</h2>
             <table border="1">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CrearUsuarioModal from './CrearUsuario';
+import '../App.css';
 
 const API_USUARIO = 'http://localhost:8000/api/usuarios';
 
@@ -33,40 +34,42 @@ function Usuarios() {
     return (
         <div>
             <h1>Gestión de Usuarios</h1>
-            <button onClick={() => setMostrarModal(true)}>Crear Usuario</button>
+            <button onClick={() => setMostrarModal(true)} className='button-new'>Crear Usuario</button>
 
             <h2>Lista Usuarios</h2>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>Primer Nombre</th>
-                        <th>Segundo Nombre</th>
-                        <th>Primer Apellido</th>
-                        <th>Segundo Apellido</th>
-                        <th>Correo</th>
-                        <th>rol</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {usuarios.map((usuarios) => (
-                        <tr key={usuarios.id}>
-                            <td>{usuarios.name1}</td>
-                            <td>{usuarios.name2}</td>
-                            <td>{usuarios.surname1}</td>
-                            <td>{usuarios.surname2}</td>
-                            <td>{usuarios.email}</td>
-                            <td>{usuarios.rol}</td>
-                            <td>
-                                <button onClick={() => eliminarUsuarios(producto.id)}>Eliminar</button>
-                            </td>
-                            <td>
-                                <button>Editar</button>
-                            </td>
+            <div className='user-list'>
+                <table border="1" className='user-table'>
+                    <thead>
+                        <tr>
+                            <th>Primer Nombre</th>
+                            <th>Segundo Nombre</th>
+                            <th>Primer Apellido</th>
+                            <th>Segundo Apellido</th>
+                            <th>Correo</th>
+                            <th>rol</th>
+                            <th>Acciones</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {usuarios.map((usuarios) => (
+                            <tr key={usuarios.id}>
+                                <td>{usuarios.name1}</td>
+                                <td>{usuarios.name2}</td>
+                                <td>{usuarios.surname1}</td>
+                                <td>{usuarios.surname2}</td>
+                                <td>{usuarios.email}</td>
+                                <td>{usuarios.rol}</td>
+                                <td>
+                                    <button onClick={() => eliminarUsuarios(producto.id)}>Eliminar</button>
+                                </td>
+                                <td>
+                                    <button>Editar</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
 
             {mostrarModal && (
                 <CrearUsuarioModal

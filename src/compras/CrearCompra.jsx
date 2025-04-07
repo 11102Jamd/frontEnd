@@ -3,183 +3,170 @@ import axios from 'axios';
 
 const API_ORDENES = 'http://localhost:8000/api/compras';
 const API_PROVEEDORES = 'http://localhost:8000/api/proveedores';
+const API_INSUMOS = 'http://localhost:8000/api/insumos'; 
 
 function CrearOrdenModal({ onClose, onOrdenCreada }) {
     const [proveedores, setProveedores] = useState([]);
+    const [insumos, setInsumos] = useState([]);
     const [orden, setOrden] = useState({
         ID_supplier: '',
         PurchaseOrderDate: '',
         inputs: []
     });
 
-    const [input, setInput] = useState({
-        InputName: '',
+    const [nuevoInsumo, setNuevoInsumo] = useState({
+        ID_input: '',
         InitialQuantity: '',
-        UnitMeasurement: '',
-        CurrentStock: '',
-        UnitMeasurementGrams: 'g',
+        UnitMeasurement: 'Kg',
         UnityPrice: ''
     });
 
+    const [insumoSeleccionado, setInsumoSeleccionado] = useState(null);
+
     useEffect(() => {
-        const obtenerProveedores = async () => {
+        const fetchData = async () => {
             try {
-                const response = await axios.get(API_PROVEEDORES);
-                setProveedores(response.data);
+                const [resProveedores, resInsumos] = await Promise.all([
+                    axios.get(API_PROVEEDORES),
+                    axios.get(API_INSUMOS)
+                ]);
+                setProveedores(resProveedores.data);
+                setInsumos(resInsumos.data);
             } catch (error) {
-                console.error("Error al obtener proveedores:", error);
+                console.error("Error cargando datos:", error);
             }
         };
-        obtenerProveedores();
+        fetchData();
     }, []);
-    
+
+    const handleSelectInsumo = (e) => {
+        const selectedId = e.target.value;
+        setNuevoInsumo({ ...nuevoInsumo, ID_input: selectedId });
+
+        const insumo = insumos.find(i => i.id === parseInt(selectedId));
+        setInsumoSeleccionado(insumo);
+    };
+
     const agregarInput = () => {
-        if (!input.InputName || !input.InitialQuantity || !input.UnitMeasurement || 
-            !input.UnityPrice || !input.CurrentStock) {
+        if (!nuevoInsumo.ID_input || !nuevoInsumo.InitialQuantity || !nuevoInsumo.UnitMeasurement || !nuevoInsumo.UnityPrice) {
             alert("Todos los campos del insumo son obligatorios.");
             return;
         }
 
         const inputToAdd = {
-            ...input,
-            InitialQuantity: parseFloat(input.InitialQuantity),
-            CurrentStock: parseFloat(input.CurrentStock),
-            UnityPrice: parseFloat(input.UnityPrice),
-            UnitMeasurementGrams: 'g'
+            ...nuevoInsumo,
+            InitialQuantity: parseFloat(nuevoInsumo.InitialQuantity),
+            UnityPrice: parseFloat(nuevoInsumo.UnityPrice)
         };
-        
+
         setOrden({ ...orden, inputs: [...orden.inputs, inputToAdd] });
-        setInput({ 
-            InputName: '', 
-            InitialQuantity: '', 
-            UnitMeasurement: '', 
-            CurrentStock: '',
-            UnitMeasurementGrams: 'g',
-            UnityPrice: '' 
+
+        setNuevoInsumo({
+            ID_input: '',
+            InitialQuantity: '',
+            UnitMeasurement: 'Kg',
+            UnityPrice: ''
         });
+        setInsumoSeleccionado(null);
     };
 
     const eliminarInput = (index) => {
-        const nuevosInsumos = [...orden.inputs];
-        nuevosInsumos.splice(index, 1);
-        setOrden({ ...orden, inputs: nuevosInsumos });
+        const nuevos = [...orden.inputs];
+        nuevos.splice(index, 1);
+        setOrden({ ...orden, inputs: nuevos });
     };
 
-    const handleChange = (e) => {
+    const handleOrdenChange = (e) => {
         setOrden({ ...orden, [e.target.name]: e.target.value });
     };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setInput({
-            ...input,
-            [name]: value
-        });
+    const handleInsumoChange = (e) => {
+        setNuevoInsumo({ ...nuevoInsumo, [e.target.name]: e.target.value });
     };
 
     const enviarOrden = async () => {
         if (!orden.ID_supplier || !orden.PurchaseOrderDate || orden.inputs.length === 0) {
-            alert("Todos los campos son obligatorios y debe agregar al menos un insumo.");
+            alert("Faltan datos obligatorios o insumos.");
             return;
         }
 
         try {
             await axios.post(API_ORDENES, orden);
             alert("Orden creada exitosamente");
-            
-            if (typeof onOrdenCreada === 'function') {
-                onOrdenCreada();
-            }
-            
+            onOrdenCreada?.();
             onClose();
         } catch (error) {
-            console.error("Error al crear la orden:", error.response?.data || error.message);
-            alert(`Error al crear la orden: ${error.response?.data?.message || error.message}`);
+            console.error("Error al crear orden:", error.response?.data || error.message);
+            alert(`Error: ${error.response?.data?.message || error.message}`);
         }
     };
 
     return (
-        <div className="modal">
-            <div className="modal-content">
+        <div>
+            <div className="form-compras">
                 <h2>Crear Orden de Compra</h2>
 
-                <div>
-                    <label>Proveedor:</label>
-                    <select name="ID_supplier" value={orden.ID_supplier} onChange={handleChange}>
-                        <option value="">Seleccione un proveedor</option>
-                        {proveedores.map(proveedor => (
-                            <option key={proveedor.id} value={proveedor.id}>
-                                {proveedor.nombre || proveedor.name || proveedor.razon_social} {/* Ajusta según tus datos */}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                <label>Proveedor:</label>
+                <select name="ID_supplier" value={orden.ID_supplier} onChange={handleOrdenChange}>
+                    <option value="">Seleccione un proveedor</option>
+                    {proveedores.map(proveedor => (
+                        <option key={proveedor.id} value={proveedor.id}>
+                            {proveedor.nombre || proveedor.name || proveedor.razon_social}
+                        </option>
+                    ))}
+                </select>
 
-                <div>
-                    <label>Fecha:</label>
-                    <input type="date"  name="PurchaseOrderDate" value={orden.PurchaseOrderDate} onChange={handleChange}/>
-                </div>
+                <label>Fecha:</label>
+                <input type="date" name="PurchaseOrderDate" value={orden.PurchaseOrderDate} onChange={handleOrdenChange} />
+                
+                <h2>Añadir Insumos</h2>
 
-                <h3>Insumos:</h3>
+                <label>Seleccionar Insumo:</label>
+                <select value={nuevoInsumo.ID_input} onChange={handleSelectInsumo}>
+                    <option value="">Seleccione un insumo</option>
+                    {insumos.map(insumo => (
+                        <option key={insumo.id} value={insumo.id}>
+                            {insumo.InputName}
+                        </option>
+                    ))}
+                </select>
+
+                <label>Cantidad a agregar:</label>
+                <input type="number" name="InitialQuantity" value={nuevoInsumo.InitialQuantity} onChange={handleInsumoChange} />
+            
+                
+                <label>Unidad:</label>
+                <select name="UnitMeasurement" value={nuevoInsumo.UnitMeasurement} onChange={handleInsumoChange}>
+                    <option value="g">g</option>
+                    <option value="Kg">Kg</option>
+                    <option value="lb">lb</option>
+                </select>
+
+                <label>Precio Unitario:</label>
+                <input type="number" name="UnityPrice" value={nuevoInsumo.UnityPrice} onChange={handleInsumoChange} step="0.01" />
+
+                <h3>Insumos Agregados</h3>
                 {orden.inputs.map((item, index) => (
                     <div key={index}>
-                        <div>
-                            <span>{item.InputName} - {item.InitialQuantity} {item.UnitMeasurement} - Stock: {item.CurrentStock} - ${item.UnityPrice}</span>
-                        </div>
-                        <button onClick={() => eliminarInput(index)}>
-                            Eliminar
-                        </button>
+                        <span>ID: {item.ID_input} - Cantidad: {item.InitialQuantity} {item.UnitMeasurement} - Precio: ${item.UnityPrice}</span>
+                        <button onClick={() => eliminarInput(index)}>Eliminar</button>
                     </div>
                 ))}
 
-                <h4>Agregar Insumo</h4>
-                <div>
+                {insumoSeleccionado && (
                     <div>
-                        <label>Nombre:</label>
-                        <input type="text" name="InputName" placeholder="Nombre" value={input.InputName} onChange={handleInputChange} />
+                        <p><strong>Nombre:</strong> {insumoSeleccionado.InputName}</p>
+                        <p><strong>Stock actual:</strong> {insumoSeleccionado.CurrentStock} g</p>
+                        <p><strong>Unidad medida:</strong> {insumoSeleccionado.UnitMeasurement}</p>
                     </div>
-                    <div>
-                        <label>Cantidad:</label>
-                        <input type="number" name="InitialQuantity" placeholder="Cantidad" value={input.InitialQuantity} onChange={handleInputChange}/>
-                    </div>
-                    <div>
-                        <label>Unidad de Medida:</label>
-                        <select name="UnitMeasurement" value={input.UnitMeasurement} onChange={handleInputChange}>
-                            <option value="">Seleccione unidad</option>
-                            <option value="Kg">Kg</option>
-                            <option value="lb">lb</option>
-                            <option value="g">g</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Stock Actual:</label>
-                        <input type="number" name="CurrentStock" placeholder="Stock Actual" value={input.CurrentStock} onChange={handleInputChange}/>
-                    </div>
-                    <div>
-                        <label>Unidad en Gramos:</label>
-                        <input type="text" name="UnitMeasurementGrams" value="g"readOnly/>
-                    </div>
-                    <div>
-                        <label>Precio Unitario:</label>
-                        <input type="number" name="UnityPrice" placeholder="Precio" value={input.UnityPrice} onChange={handleInputChange} step="0.01"/>
-                    </div>
-                </div>
-                <button onClick={agregarInput}>
-                    Añadir Insumo
-                </button>
+                )}
 
-                <div>
-                    <button onClick={onClose}>
-                        Cancelar
-                    </button>
-                    <button onClick={enviarOrden}>
-                        Guardar Orden
-                    </button>
-                </div>
+                <button onClick={agregarInput} className='button-sum'>Añadir Insumo</button>
+                <button onClick={onClose} className='button-close'>Cancelar</button>
+                <button onClick={enviarOrden} className='button-save'>Guardar Orden</button>
             </div>
         </div>
     );
 }
 
 export default CrearOrdenModal;
-
