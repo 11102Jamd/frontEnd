@@ -14,7 +14,6 @@ function CrearPedidoModal({ onClose, onPedidoCreado }) {
     const [productoSeleccionado, setProductoSeleccionado] = useState('');
     const [cantidad, setCantidad] = useState(1);
 
-    // Cargar productos desde la API
     useEffect(() => {
         const cargarProductos = async () => {
             try {
@@ -60,7 +59,7 @@ function CrearPedidoModal({ onClose, onPedidoCreado }) {
 
             alert('Pedido creado exitosamente');
             onPedidoCreado();
-            
+            onClose();
             setPedido({
                 ID_users: 1,  
                 OrderDate: new Date().toISOString().split('T')[0],

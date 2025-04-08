@@ -13,6 +13,7 @@ import Insumos from "./insumos/InsumosList";
 import Compras from "./compras/ComprasList";
 
 import './App.css';
+import Fabricacion from "./fabricacion/FabricacionList";
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
                             <Route path="/proveedores" element={<Proveedor />} />
                             <Route path="/insumos" element={<Insumos />} />
                             <Route path="/compras" element={<Compras />} />
+                            <Route path="/fabricacion" element={<Fabricacion/>}></Route>
                         </Routes>
                 </MainContent>
             </div>

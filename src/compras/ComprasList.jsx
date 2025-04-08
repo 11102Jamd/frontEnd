@@ -52,9 +52,9 @@ function Compras(){
                         <tr key={compras.id}>
                             <td>{compras.ID_supplier}</td>
                             <td>{compras.PurchaseOrderDate}</td>
-                            <td>{compras.PurchaseTotal}</td>
+                            <td>{compras.PurchaseTotal} $</td>
                             <td>
-                                <button onClick={() => eliminarCompra(compras.id)}>Eliminar</button>
+                                <button onClick={() => eliminarCompra(compras.id)} className="button-danger">Eliminar</button>
                             </td>
                         </tr>
                     ))}

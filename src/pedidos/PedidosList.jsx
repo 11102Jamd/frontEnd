@@ -50,9 +50,9 @@ function Pedidos() {
                         <tr key={pedido.id}>
                             <td>{pedido.ID_users}</td>
                             <td>{pedido.OrderDate}</td>
-                            <td>{pedido.OrderTotal}</td>
+                            <td>{pedido.OrderTotal} $</td>
                             <td>
-                                <button onClick={() => eliminarPedido(pedido.id)}>Eliminar</button>
+                                <button onClick={() => eliminarPedido(pedido.id)} className='button-danger'>Eliminar</button>
                             </td>
                         </tr>
                     ))}

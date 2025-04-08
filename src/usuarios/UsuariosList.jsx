@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CrearUsuarioModal from './CrearUsuario';
+import EditarUsuarioModal from './EditarUsuario';
 import '../App.css';
 
 const API_USUARIO = 'http://localhost:8000/api/usuarios';
@@ -8,6 +9,7 @@ const API_USUARIO = 'http://localhost:8000/api/usuarios';
 function Usuarios() {
     const [usuarios, setUsuarios] = useState([]);
     const [mostrarModal, setMostrarModal] = useState(false);
+    const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
 
     useEffect(() => {
         obtenerUsuarios();
@@ -60,10 +62,8 @@ function Usuarios() {
                                 <td>{usuarios.email}</td>
                                 <td>{usuarios.rol}</td>
                                 <td>
-                                    <button onClick={() => eliminarUsuarios(producto.id)}>Eliminar</button>
-                                </td>
-                                <td>
-                                    <button>Editar</button>
+                                    <button onClick={() => eliminarUsuarios(producto.id)} className='button-danger'>Eliminar</button>
+                                    <button onClick={() => setUsuarioSeleccionado(usuarios)} className='button-edit'>Editar</button>
                                 </td>
                             </tr>
                         ))}
@@ -76,8 +76,16 @@ function Usuarios() {
                     onClose={() => setMostrarModal(false)}
                     onUsuarioCreado={obtenerUsuarios}
                 />
-            
             )}
+
+            {usuarioSeleccionado && (
+                <EditarUsuarioModal
+                    usuario={usuarioSeleccionado}
+                    onClose={() => setUsuarioSeleccionado(null)}
+                    onUsuarioActualizado={obtenerUsuarios}
+                />
+            )}
+
         </div>
     );
 }

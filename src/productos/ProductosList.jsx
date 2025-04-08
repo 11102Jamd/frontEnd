@@ -52,9 +52,9 @@ function Productos() {
                             <td>{producto.ProductName}</td>
                             <td>{producto.InitialQuantity}</td>
                             <td>{producto.CurrentStock}</td>
-                            <td>{producto.UnityPrice}</td>
+                            <td>{producto.UnityPrice} $</td>
                             <td>
-                                <button onClick={() => eliminarProducto(producto.id)}>Eliminar</button>
+                                <button onClick={() => eliminarProducto(producto.id)} className='button-danger'>Eliminar</button>
                             </td>
                         </tr>
                     ))}

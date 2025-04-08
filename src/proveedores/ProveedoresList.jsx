@@ -55,10 +55,8 @@ function Proveedor(){
                             <td>{proveedores.Addres}</td>
                             <td>{proveedores.Phone}</td>
                             <td>
-                                <button onClick={() => eliminarProveedor(proveedores.id)}>Eliminar</button>
-                            </td>
-                            <td>
-                                <button>Editar</button>
+                                <button onClick={() => eliminarProveedor(proveedores.id)} className="button-danger">Eliminar</button>
+                                <button className="button-edit">Editar</button>
                             </td>
                         </tr>
                     ))}

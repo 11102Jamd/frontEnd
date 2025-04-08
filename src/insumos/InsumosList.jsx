@@ -56,9 +56,10 @@ function Insumos() {
                             <td>{insumo.UnitMeasurement}</td>
                             <td>{insumo.CurrentStock}</td>
                             <td>{insumo.UnitMeasurementGrams}</td>
-                            <td>{insumo.UnityPrice}</td>
+                            <td>{insumo.UnityPrice} $</td>
                             <td>
-                                <button onClick={() => eliminarInsumos(insumo.id)}>Eliminar</button>
+                                <button onClick={() => eliminarInsumos(insumo.id)} className='button-danger'>Eliminar</button>
+                                <button className='button-edit'>Editar</button>
                             </td>
                         </tr>
                     ))}

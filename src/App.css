@@ -209,6 +209,27 @@ select{
 .button-sum:hover{
     background-color: #abebc6;
 }
+
+.button-danger{
+    background-color:  #c0392b;
+    color: #f5f6fa;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+.button-danger:hover{
+    background-color: #f5b7b1;
+}
+.button-edit{
+    background-color: #f1c40f;
+    color: #f5f6fa;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+.button-edit:hover{
+    background-color: #f7dc6f;
+}
 /*Se aplica el mismo estilo a formularios de muchos Productos o Insumos*/
 
 .form-row {

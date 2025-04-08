@@ -50,6 +50,12 @@ function Sidebar() {
                 </Link>
             </li>
 
+            <li className="nav-item">
+                <Link to="/fabricacion" className="nav-link text-white sidebar-link">
+                    <i className="bi bi-gear-fill me-2"></i> Fabricacion
+                </Link>
+            </li>
+
             </ul>
         </div>
     );
