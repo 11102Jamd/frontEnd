@@ -50,7 +50,7 @@ function Fabricacion(){
                         <tr key={fabricacion.id}>
                             <td>{fabricacion.ID_product}</td>
                             <td>{fabricacion.ManufacturingTime}</td>
-                            <td>{fabricacion.Labour}</td>
+                            <td>{fabricacion.Labour} $</td>
                             <td>{fabricacion.ManufactureProductG}</td>
                             <td>{fabricacion.TotalCostProduction} $</td>
                             <td>

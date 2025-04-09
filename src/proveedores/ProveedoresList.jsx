@@ -24,7 +24,7 @@ function Proveedor(){
         }
     };
 
-    const eliminarProveedor = async () => {
+    const eliminarProveedor = async (id) => {
         try {
             await axios.delete(`${API_PROVEEDOR}/${id}`);
             obtenerProveedor();

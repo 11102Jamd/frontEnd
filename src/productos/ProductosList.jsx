@@ -33,51 +33,61 @@ function Productos() {
     };
 
     return (
-        <div>
-            <h1>Gestión de Productos</h1>
-            <button onClick={() => setMostrarModal(true)} className='button-new'>Crear Producto</button>
+        <div className='content-user'>
+            <div className='content-list'>
+                <div className='title'>
+                    <h1>Gestión de Productos</h1>
+                </div>
 
-            <h2>Lista de Productos</h2>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>Nombre Producto</th>
-                        <th>Cantidad Inicial</th>
-                        <th>Stock Actual</th>
-                        <th>Precio Unidad</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {producto.map((producto) => (
-                        <tr key={producto.id}>
-                            <td>{producto.ProductName}</td>
-                            <td>{producto.InitialQuantity}</td>
-                            <td>{producto.CurrentStock}</td>
-                            <td>{producto.UnityPrice} $</td>
-                            <td>
-                                <button onClick={() => eliminarProducto(producto.id)} className='button-danger'>Eliminar</button>
-                                <button onClick={() => setProductoSeleccionado(producto)} className='button-edit'>Editar</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                <div className='subtitle'>
+                    <h2>Lista de Productos</h2>
+                </div>
 
-            {mostrarModal && (
-                <CrearProductoModal
-                    onClose={() => setMostrarModal(false)}
-                    onProductoCreado={obtenerProductos}
-                />
-            )}
+                <div className='btn-new-product'>
+                    <button onClick={() => setMostrarModal(true)} className='button-new'>Crear Producto</button>
+                </div>
+                <div className='list'>
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <th>Nombre Producto</th>
+                                <th>Cantidad Inicial</th>
+                                <th>Stock Actual</th>
+                                <th>Precio Unidad</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {producto.map((producto) => (
+                                <tr key={producto.id}>
+                                    <td>{producto.ProductName}</td>
+                                    <td>{producto.InitialQuantity}</td>
+                                    <td>{producto.CurrentStock}</td>
+                                    <td>{producto.UnityPrice} $</td>
+                                    <td>
+                                        <button onClick={() => eliminarProducto(producto.id)} className='button-danger'>Eliminar</button>
+                                        <button onClick={() => setProductoSeleccionado(producto)} className='button-edit'>Editar</button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                {mostrarModal && (
+                    <CrearProductoModal
+                        onClose={() => setMostrarModal(false)}
+                        onProductoCreado={obtenerProductos}
+                    />
+                )}
 
-            {productoSeleccionado && (
-                <EditarProductoModal
-                    producto={productoSeleccionado}
-                    onClose={() => setProductoSeleccionado(null)}
-                    onProductoActualizado={obtenerProductos}
-                />
-            )}
+                {productoSeleccionado && (
+                    <EditarProductoModal
+                        producto={productoSeleccionado}
+                        onClose={() => setProductoSeleccionado(null)}
+                        onProductoActualizado={obtenerProductos}
+                    />
+                )}
+            </div>
         </div>
     );
 }

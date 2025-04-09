@@ -35,7 +35,7 @@ function Usuarios() {
 
     return (
         <div className='content-user'>
-            <div className='content-user-list'>
+            <div className='content-list'>
                 <div className='title'>
                     <h1>Gestión de Usuarios</h1>
                 </div>
@@ -46,7 +46,7 @@ function Usuarios() {
                 <div className='btn-new-user'>
                     <button onClick={() => setMostrarModal(true)} className='button-new'>Crear Usuario</button>
                 </div>
-                <div className='user-list'>
+                <div className='list'>
                     <table border="1" className='user-table'>
                         <thead>
                             <tr>
@@ -69,7 +69,7 @@ function Usuarios() {
                                     <td>{usuarios.email}</td>
                                     <td>{usuarios.rol}</td>
                                     <td>
-                                        <button onClick={() => eliminarUsuarios(producto.id)} className='button-danger'>Eliminar</button>
+                                        <button onClick={() => eliminarUsuarios(usuarios.id)} className='button-danger'>Eliminar</button>
                                         <button onClick={() => setUsuarioSeleccionado(usuarios)} className='button-edit'>Editar</button>
                                     </td>
                                 </tr>

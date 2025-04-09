@@ -119,11 +119,11 @@ body {
     background-color: rgba(255, 255, 255, 0.1);
 }
 /* Estilos para el Usuario */
-.content-user-list{ 
+.content-list{ 
     height: 900px; 
     border-style: double;
 }
-.user-list{
+.list{
     overflow-x: auto;
     display: flex;
     justify-content: center; 
@@ -142,6 +142,10 @@ body {
 }
 .btn-new-user{
     margin-left: 100px;
+}
+
+.btn-new-product{
+    margin-left: 255px;
 }
 .user-table, th, td{
     border: 3;
