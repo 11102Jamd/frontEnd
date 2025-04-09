@@ -31,7 +31,7 @@ function Fabricacion(){
     return(
         <div>
             <h1>Fabricacion</h1>
-            <button onClick={() => setMostrarModal(true)} className="button-new">Crear Compra</button>
+            <button onClick={() => setMostrarModal(true)} className="button-new">Crear Fabricacion</button>
 
             <h2>Lista de Fabricacion</h2>
             <table border="1">
@@ -52,7 +52,7 @@ function Fabricacion(){
                             <td>{fabricacion.ManufacturingTime}</td>
                             <td>{fabricacion.Labour}</td>
                             <td>{fabricacion.ManufactureProductG}</td>
-                            <td>{fabricacion.TotalCostProduction}</td>
+                            <td>{fabricacion.TotalCostProduction} $</td>
                             <td>
                                 <button onClick={() => eliminarFabricacion(fabricacion.id)} className="button-danger">Eliminar</button>
                             </td>

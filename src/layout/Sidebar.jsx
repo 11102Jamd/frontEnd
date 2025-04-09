@@ -15,7 +15,7 @@ function Sidebar() {
 
             <ul className="nav flex-column">
             <li className="nav-item">
-                <Link to="/" className="nav-link text-white sidebar-link">
+                <Link to="/welcome" className="nav-link text-white sidebar-link">
                     <i className="bi bi-house-door me-2"></i> Inicio
                 </Link>
             </li>

@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CrearInsumoModal from './CrearInsumo';
+import EditarInsumoModal from './EditarInusmo';
 
 const API_INSUMOS = 'http://localhost:8000/api/insumos';
 
 function Insumos() {
     const [insumo, setInsumos] = useState([]);
     const [mostrarModal, setMostrarModal] = useState(false);
+    const [paginaActual, setPaginaActual] = useState(1);
+    const [insumoSeleccionado, setInsumoSeleccionado] = useState(null);
+    const insumosPorPagina = 5;
 
     useEffect(() => {
         obtenerInsumos();
@@ -30,6 +34,15 @@ function Insumos() {
         }
     };
 
+    const indiceUltimoInsumo = paginaActual * insumosPorPagina;
+    const indicePrimerInsumo = indiceUltimoInsumo - insumosPorPagina;
+    const insumosActuales = insumo.slice(indicePrimerInsumo, indiceUltimoInsumo);
+    const totalPaginas = Math.ceil(insumo.length / insumosPorPagina);
+
+    const cambiarPagina = (numeroPagina) => {
+        setPaginaActual(numeroPagina);
+    };
+
     return (
         <div>
             <h1>Gestión de Insumos</h1>
@@ -49,7 +62,7 @@ function Insumos() {
                     </tr>
                 </thead>
                 <tbody>
-                    {insumo.map((insumo) => (
+                    {insumosActuales.map((insumo) => (
                         <tr key={insumo.id}>
                             <td>{insumo.InputName}</td>
                             <td>{insumo.InitialQuantity}</td>
@@ -59,17 +72,37 @@ function Insumos() {
                             <td>{insumo.UnityPrice} $</td>
                             <td>
                                 <button onClick={() => eliminarInsumos(insumo.id)} className='button-danger'>Eliminar</button>
-                                <button className='button-edit'>Editar</button>
+                                <button onClick={() => setInsumoSeleccionado(insumo)} className='button-edit'>Editar</button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
 
+            <div className="paginacion">
+                {Array.from({ length: totalPaginas }, (_, i) => (
+                    <button
+                        key={i}
+                        onClick={() => cambiarPagina(i + 1)}
+                        className={paginaActual === i + 1 ? 'pagina-activa' : ''}
+                    >
+                        {i + 1}
+                    </button>
+                ))}
+            </div>
+
             {mostrarModal && (
                 <CrearInsumoModal
                     onClose={() => setMostrarModal(false)}
                     onInsumoCreado={obtenerInsumos}
+                />
+            )}
+
+            {insumoSeleccionado && (
+                <EditarInsumoModal
+                    insumo={insumoSeleccionado}
+                    onClose={() => setInsumoSeleccionado(null)}
+                    onInsumoActualizado={obtenerInsumos}
                 />
             )}
         </div>

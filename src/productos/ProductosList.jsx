@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CrearProductoModal from './CrearProducto';
+import EditarProductoModal from './EditarProducto';
 
 const API_PRODUCTOS = 'http://localhost:8000/api/productos';
 
 function Productos() {
     const [producto, setProductos] = useState([]);
     const [mostrarModal, setMostrarModal] = useState(false);
+    const [productoSeleccionado, setProductoSeleccionado] = useState(null);
 
     useEffect(() => {
         obtenerProductos();
@@ -55,6 +57,7 @@ function Productos() {
                             <td>{producto.UnityPrice} $</td>
                             <td>
                                 <button onClick={() => eliminarProducto(producto.id)} className='button-danger'>Eliminar</button>
+                                <button onClick={() => setProductoSeleccionado(producto)} className='button-edit'>Editar</button>
                             </td>
                         </tr>
                     ))}
@@ -65,6 +68,14 @@ function Productos() {
                 <CrearProductoModal
                     onClose={() => setMostrarModal(false)}
                     onProductoCreado={obtenerProductos}
+                />
+            )}
+
+            {productoSeleccionado && (
+                <EditarProductoModal
+                    producto={productoSeleccionado}
+                    onClose={() => setProductoSeleccionado(null)}
+                    onProductoActualizado={obtenerProductos}
                 />
             )}
         </div>

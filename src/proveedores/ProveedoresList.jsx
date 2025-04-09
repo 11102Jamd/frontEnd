@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import CrearProveedorModal from "./CrearProveedor";
+import EditarProveedorModal from "./EditarProveedor";
 
 
 const API_PROVEEDOR = 'http://localhost:8000/api/proveedores';
@@ -8,6 +9,7 @@ const API_PROVEEDOR = 'http://localhost:8000/api/proveedores';
 function Proveedor(){
     const [proveedores, setProveedor] = useState([]);
     const [mostrarModal, setMostrarModal] = useState(false);
+    const [proveedorSeleccionado, setProveedorSeleccionado] = useState(null);
 
     useEffect(() => {
         obtenerProveedor();
@@ -56,24 +58,25 @@ function Proveedor(){
                             <td>{proveedores.Phone}</td>
                             <td>
                                 <button onClick={() => eliminarProveedor(proveedores.id)} className="button-danger">Eliminar</button>
-                                <button className="button-edit">Editar</button>
+                                <button onClick={() => setProveedorSeleccionado(proveedores)} className='button-edit'>Editar</button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
 
-            {/* {mostrarModal && (
-                <CrearUsuarioModal
-                    onClose={() => setMostrarModal(false)}
-                    onUsuarioCreado={obtenerUsuarios}
-                />
-            
-            )} */}
             {mostrarModal && (
                 <CrearProveedorModal
                 onClose={() => setMostrarModal(false)}
                 onProveedorCreado={obtenerProveedor}
+                />
+            )}
+
+            {proveedorSeleccionado && (
+                <EditarProveedorModal
+                    proveedor={proveedorSeleccionado}
+                    onClose={() => setProveedorSeleccionado(null)}
+                    onProveedorActualizado={obtenerProveedor}
                 />
             )}
         </div>

@@ -14,11 +14,13 @@ import Compras from "./compras/ComprasList";
 
 import './App.css';
 import Fabricacion from "./fabricacion/FabricacionList";
+import Welcome from "./welcome/welcome";
 
 
 function App() {
     return (
         <Router>
+            <Header/>
             <div className="app-container">
                 <Sidebar />
                 <MainContent>
@@ -31,6 +33,7 @@ function App() {
                             <Route path="/insumos" element={<Insumos />} />
                             <Route path="/compras" element={<Compras />} />
                             <Route path="/fabricacion" element={<Fabricacion/>}></Route>
+                            <Route path="/welcome" element={<Welcome/>}></Route>
                         </Routes>
                 </MainContent>
             </div>

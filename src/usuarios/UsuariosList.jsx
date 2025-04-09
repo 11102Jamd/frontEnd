@@ -34,58 +34,65 @@ function Usuarios() {
     };
 
     return (
-        <div>
-            <h1>Gestión de Usuarios</h1>
-            <button onClick={() => setMostrarModal(true)} className='button-new'>Crear Usuario</button>
-
-            <h2>Lista Usuarios</h2>
-            <div className='user-list'>
-                <table border="1" className='user-table'>
-                    <thead>
-                        <tr>
-                            <th>Primer Nombre</th>
-                            <th>Segundo Nombre</th>
-                            <th>Primer Apellido</th>
-                            <th>Segundo Apellido</th>
-                            <th>Correo</th>
-                            <th>rol</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {usuarios.map((usuarios) => (
-                            <tr key={usuarios.id}>
-                                <td>{usuarios.name1}</td>
-                                <td>{usuarios.name2}</td>
-                                <td>{usuarios.surname1}</td>
-                                <td>{usuarios.surname2}</td>
-                                <td>{usuarios.email}</td>
-                                <td>{usuarios.rol}</td>
-                                <td>
-                                    <button onClick={() => eliminarUsuarios(producto.id)} className='button-danger'>Eliminar</button>
-                                    <button onClick={() => setUsuarioSeleccionado(usuarios)} className='button-edit'>Editar</button>
-                                </td>
+        <div className='content-user'>
+            <div className='content-user-list'>
+                <div className='title'>
+                    <h1>Gestión de Usuarios</h1>
+                </div>
+                
+                <div className='subtitle'>
+                    <h2>Lista de Usuarios</h2>
+                </div>
+                <div className='btn-new-user'>
+                    <button onClick={() => setMostrarModal(true)} className='button-new'>Crear Usuario</button>
+                </div>
+                <div className='user-list'>
+                    <table border="1" className='user-table'>
+                        <thead>
+                            <tr>
+                                <th>Primer Nombre</th>
+                                <th>Segundo Nombre</th>
+                                <th>Primer Apellido</th>
+                                <th>Segundo Apellido</th>
+                                <th>Correo</th>
+                                <th>rol</th>
+                                <th>Acciones</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {usuarios.map((usuarios) => (
+                                <tr key={usuarios.id}>
+                                    <td>{usuarios.name1}</td>
+                                    <td>{usuarios.name2}</td>
+                                    <td>{usuarios.surname1}</td>
+                                    <td>{usuarios.surname2}</td>
+                                    <td>{usuarios.email}</td>
+                                    <td>{usuarios.rol}</td>
+                                    <td>
+                                        <button onClick={() => eliminarUsuarios(producto.id)} className='button-danger'>Eliminar</button>
+                                        <button onClick={() => setUsuarioSeleccionado(usuarios)} className='button-edit'>Editar</button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {mostrarModal && (
+                    <CrearUsuarioModal
+                        onClose={() => setMostrarModal(false)}
+                        onUsuarioCreado={obtenerUsuarios}
+                    />
+                )}
+
+                {usuarioSeleccionado && (
+                    <EditarUsuarioModal
+                        usuario={usuarioSeleccionado}
+                        onClose={() => setUsuarioSeleccionado(null)}
+                        onUsuarioActualizado={obtenerUsuarios}
+                    />
+                )}
             </div>
-
-            {mostrarModal && (
-                <CrearUsuarioModal
-                    onClose={() => setMostrarModal(false)}
-                    onUsuarioCreado={obtenerUsuarios}
-                />
-            )}
-
-            {usuarioSeleccionado && (
-                <EditarUsuarioModal
-                    usuario={usuarioSeleccionado}
-                    onClose={() => setUsuarioSeleccionado(null)}
-                    onUsuarioActualizado={obtenerUsuarios}
-                />
-            )}
-
         </div>
     );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API_USUARIO = 'http://localhost:8000/api/usuarios/';
+const API_USUARIO = 'http://localhost:8000/api/usuarios';
 
 function EditarUsuarioModal({ usuario, onClose, onUsuarioActualizado }) {
     const [formData, setFormData] = useState({
@@ -54,7 +54,7 @@ function EditarUsuarioModal({ usuario, onClose, onUsuarioActualizado }) {
                 ...(formData.password && { password: formData.password })
             };
 
-            const response = await axios.put(`${API_USUARIO}${usuario.id}`, payload);
+            const response = await axios.put(`${API_USUARIO}/${usuario.id}`, payload);
             onUsuarioActualizado();
             onClose();
         } catch (error) {
