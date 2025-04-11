@@ -5,168 +5,286 @@ const API_ORDENES = 'http://localhost:8000/api/compras';
 const API_PROVEEDORES = 'http://localhost:8000/api/proveedores';
 const API_INSUMOS = 'http://localhost:8000/api/insumos'; 
 
-function CrearOrdenModal({ onClose, onOrdenCreada }) {
-    const [proveedores, setProveedores] = useState([]);
-    const [insumos, setInsumos] = useState([]);
-    const [orden, setOrden] = useState({
+function CreatePurchaseOrderModal({ onClose, onPurchaseOrderCreated }) {
+    const [suppliers, setSuppliers] = useState([]);
+    const [inputs, setInputs] = useState([]);
+    const [purchaseOrder, setPurchaseOrder] = useState({
         ID_supplier: '',
-        PurchaseOrderDate: '',
+        PurchaseOrderDate: new Date().toISOString().split('T')[0],
         inputs: []
     });
 
-    const [nuevoInsumo, setNuevoInsumo] = useState({
+    const [newInput, setNewInput] = useState({
         ID_input: '',
         InitialQuantity: '',
         UnitMeasurement: 'Kg',
         UnityPrice: ''
     });
 
-    const [insumoSeleccionado, setInsumoSeleccionado] = useState(null);
+    const [selectInput, setSelectInput] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [resProveedores, resInsumos] = await Promise.all([
+                const [responseSuppliers, responseInputs] = await Promise.all([
                     axios.get(API_PROVEEDORES),
                     axios.get(API_INSUMOS)
                 ]);
-                setProveedores(resProveedores.data);
-                setInsumos(resInsumos.data);
+                setSuppliers(responseSuppliers.data);
+                setInputs(responseInputs.data);
+                setLoading(false);
             } catch (error) {
                 console.error("Error cargando datos:", error);
+                setLoading(false);
             }
         };
         fetchData();
     }, []);
 
-    const handleSelectInsumo = (e) => {
+    const handleSelectInput = (e) => {
         const selectedId = e.target.value;
-        setNuevoInsumo({ ...nuevoInsumo, ID_input: selectedId });
+        setNewInput({ ...newInput, ID_input: selectedId });
 
-        const insumo = insumos.find(i => i.id === parseInt(selectedId));
-        setInsumoSeleccionado(insumo);
+        const input = inputs.find(i => i.id === parseInt(selectedId));
+        setSelectInput(input);
     };
 
     const agregarInput = () => {
-        if (!nuevoInsumo.ID_input || !nuevoInsumo.InitialQuantity || !nuevoInsumo.UnitMeasurement || !nuevoInsumo.UnityPrice) {
+        if (!newInput.ID_input || !newInput.InitialQuantity || !newInput.UnitMeasurement || !newInput.UnityPrice) {
             alert("Todos los campos del insumo son obligatorios.");
             return;
         }
 
         const inputToAdd = {
-            ...nuevoInsumo,
-            InitialQuantity: parseFloat(nuevoInsumo.InitialQuantity),
-            UnityPrice: parseFloat(nuevoInsumo.UnityPrice)
+            ...newInput,
+            InputName: selectInput?.InputName || '',
+            InitialQuantity: parseFloat(newInput.InitialQuantity),
+            UnityPrice: parseFloat(newInput.UnityPrice)
         };
 
-        setOrden({ ...orden, inputs: [...orden.inputs, inputToAdd] });
+        setPurchaseOrder({ ...purchaseOrder, inputs: [...purchaseOrder.inputs, inputToAdd] });
 
-        setNuevoInsumo({
+        setNewInput({
             ID_input: '',
             InitialQuantity: '',
             UnitMeasurement: 'Kg',
             UnityPrice: ''
         });
-        setInsumoSeleccionado(null);
+        setSelectInput(null);
     };
 
     const eliminarInput = (index) => {
-        const nuevos = [...orden.inputs];
-        nuevos.splice(index, 1);
-        setOrden({ ...orden, inputs: nuevos });
+        const updatedInputs = [...purchaseOrder.inputs];
+        updatedInputs.splice(index, 1);
+        setPurchaseOrder({ ...purchaseOrder, inputs: updatedInputs });
     };
 
     const handleOrdenChange = (e) => {
-        setOrden({ ...orden, [e.target.name]: e.target.value });
+        setPurchaseOrder({ ...purchaseOrder, [e.target.name]: e.target.value });
     };
 
-    const handleInsumoChange = (e) => {
-        setNuevoInsumo({ ...nuevoInsumo, [e.target.name]: e.target.value });
+    const handleInputChange = (e) => {
+        setNewInput({ ...newInput, [e.target.name]: e.target.value });
     };
 
-    const enviarOrden = async () => {
-        if (!orden.ID_supplier || !orden.PurchaseOrderDate || orden.inputs.length === 0) {
+    const sendPurchaseOrder = async () => {
+        if (!purchaseOrder.ID_supplier || !purchaseOrder.PurchaseOrderDate || purchaseOrder.inputs.length === 0) {
             alert("Faltan datos obligatorios o insumos.");
             return;
         }
 
         try {
-            await axios.post(API_ORDENES, orden);
+            await axios.post(API_ORDENES, purchaseOrder);
             alert("Orden creada exitosamente");
-            onOrdenCreada?.();
+            onPurchaseOrderCreated?.();
             onClose();
         } catch (error) {
             console.error("Error al crear orden:", error.response?.data || error.message);
             alert(`Error: ${error.response?.data?.message || error.message}`);
         }
     };
-
     return (
-        <div>
-            <div className="form-compras">
-                <h2>Crear Orden de Compra</h2>
-
-                <label>Proveedor:</label>
-                <select name="ID_supplier" value={orden.ID_supplier} onChange={handleOrdenChange}>
-                    <option value="">Seleccione un proveedor</option>
-                    {proveedores.map(proveedor => (
-                        <option key={proveedor.id} value={proveedor.id}>
-                            {proveedor.nombre || proveedor.name || proveedor.razon_social}
-                        </option>
-                    ))}
-                </select>
-
-                <label>Fecha:</label>
-                <input type="date" name="PurchaseOrderDate" value={orden.PurchaseOrderDate} onChange={handleOrdenChange} />
-                
-                <h2>Añadir Insumos</h2>
-
-                <label>Seleccionar Insumo:</label>
-                <select value={nuevoInsumo.ID_input} onChange={handleSelectInsumo}>
-                    <option value="">Seleccione un insumo</option>
-                    {insumos.map(insumo => (
-                        <option key={insumo.id} value={insumo.id}>
-                            {insumo.InputName}
-                        </option>
-                    ))}
-                </select>
-
-                <label>Cantidad a agregar:</label>
-                <input type="number" name="InitialQuantity" value={nuevoInsumo.InitialQuantity} onChange={handleInsumoChange} />
-            
-                
-                <label>Unidad:</label>
-                <select name="UnitMeasurement" value={nuevoInsumo.UnitMeasurement} onChange={handleInsumoChange}>
-                    <option value="g">g</option>
-                    <option value="Kg">Kg</option>
-                    <option value="lb">lb</option>
-                </select>
-
-                <label>Precio Unitario:</label>
-                <input type="number" name="UnityPrice" value={nuevoInsumo.UnityPrice} onChange={handleInsumoChange} step="0.01" />
-
-                <h3>Insumos Agregados</h3>
-                {orden.inputs.map((item, index) => (
-                    <div key={index}>
-                        <span>ID: {item.ID_input} - Cantidad: {item.InitialQuantity} {item.UnitMeasurement} - Precio: ${item.UnityPrice}</span>
-                        <button onClick={() => eliminarInput(index)}>Eliminar</button>
+        <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+            <div className="modal-dialog modal-lg">
+                <div className="modal-content">
+                    <div className="modal-header bg-primary text-white">
+                        <h5 className="modal-title">Crear Orden de Compra</h5>
+                        <button type="button" className="btn-close btn-close-white" onClick={onClose}></button>
                     </div>
-                ))}
+                    <div className="modal-body">
+                        {/* Sección de selección de proveedor */}
+                        <div className="mb-4">
+                            <label htmlFor="ID_supplier" className="form-label">Seleccionar Proveedor</label>
+                            <select 
+                                className="form-select form-select-lg"
+                                id="ID_supplier"
+                                name="ID_supplier"
+                                value={purchaseOrder.ID_supplier}
+                                onChange={handleOrdenChange}
+                                required
+                            >
+                                <option value="">Seleccione un proveedor</option>
+                                {suppliers.map(supplier => (
+                                    <option key={supplier.id} value={supplier.id}>
+                                        {supplier.nombre || supplier.name || supplier.razon_social}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
 
-                {insumoSeleccionado && (
-                    <div>
-                        <p><strong>Nombre:</strong> {insumoSeleccionado.InputName}</p>
-                        <p><strong>Stock actual:</strong> {insumoSeleccionado.CurrentStock} g</p>
-                        <p><strong>Unidad medida:</strong> {insumoSeleccionado.UnitMeasurement}</p>
+                        {/* Sección de selección de insumos */}
+                        <div className="row mb-4">
+                            <div className="col-md-5">
+                                <label htmlFor="ID_input" className="form-label">Seleccionar Insumo</label>
+                                <select 
+                                    className="form-select form-select-lg"
+                                    id="ID_input"
+                                    value={newInput.ID_input}
+                                    onChange={handleSelectInput}
+                                >
+                                    <option value="">Seleccione un insumo</option>
+                                    {inputs.map(input => (
+                                        <option key={input.id} value={input.id}>
+                                            {input.InputName}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="col-md-2">
+                                <label htmlFor="InitialQuantity" className="form-label">Cantidad</label>
+                                <input 
+                                    type="number" 
+                                    className="form-control form-control-lg"
+                                    id="InitialQuantity"
+                                    name="InitialQuantity"
+                                    value={newInput.InitialQuantity}
+                                    onChange={handleInputChange}
+                                    min="0.01"
+                                    step="0.01"
+                                />
+                            </div>
+                            <div className="col-md-2">
+                                <label htmlFor="UnitMeasurement" className="form-label">Unidad</label>
+                                <select 
+                                    className="form-select form-select-lg"
+                                    id="UnitMeasurement"
+                                    name="UnitMeasurement"
+                                    value={newInput.UnitMeasurement}
+                                    onChange={handleInputChange}
+                                >
+                                    <option value="g">g</option>
+                                    <option value="Kg">Kg</option>
+                                    <option value="lb">lb</option>
+                                </select>
+                            </div>
+                            <div className="col-md-2">
+                                <label htmlFor="UnityPrice" className="form-label">Precio Unitario</label>
+                                <input 
+                                    type="number" 
+                                    className="form-control form-control-lg"
+                                    id="UnityPrice"
+                                    name="UnityPrice"
+                                    value={newInput.UnityPrice}
+                                    onChange={handleInputChange}
+                                    min="0.01"
+                                    step="0.01"
+                                />
+                            </div>
+                            <div className="col-md-1 d-flex align-items-end">
+                                <button 
+                                    onClick={agregarInput} 
+                                    className="btn btn-primary btn-lg"
+                                    disabled={!newInput.ID_input}
+                                >
+                                    <i className="bi bi-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Información del insumo seleccionado */}
+                        {selectInput && (
+                            <div className="alert alert-info mb-4">
+                                <p className="mb-1"><strong>Nombre:</strong> {selectInput.InputName}</p>
+                                <p className="mb-1"><strong>Stock actual:</strong> {selectInput.CurrentStock} g</p>
+                                <p className="mb-0"><strong>Unidad medida:</strong> {selectInput.UnitMeasurement}</p>
+                            </div>
+                        )}
+
+                        {/* Detalles de la orden */}
+                        <div className="mb-4">
+                            <h5>Insumos Agregados</h5>
+                            {purchaseOrder.inputs.length === 0 ? (
+                                <div className="alert alert-info">No hay insumos agregados</div>
+                            ) : (
+                                <div className="table-responsive">
+                                    <table className="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Insumo</th>
+                                                <th>Cantidad</th>
+                                                <th>Unidad</th>
+                                                <th>Precio Unitario</th>
+                                                <th>Subtotal</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {purchaseOrder.inputs.map((item, index) => (
+                                                <tr key={index}>
+                                                    <td>{item.InputName || `Insumo ID: ${item.ID_input}`}</td>
+                                                    <td>{item.InitialQuantity}</td>
+                                                    <td>{item.UnitMeasurement}</td>
+                                                    <td>${item.UnityPrice?.toFixed(2) || '0.00'}</td>
+                                                    <td>${(item.InitialQuantity * item.UnityPrice).toFixed(2)}</td>
+                                                    <td>
+                                                        <button 
+                                                            onClick={() => eliminarInput(index)}
+                                                            className="btn btn-danger btn-sm"
+                                                        >
+                                                            <i className="bi bi-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colSpan="4" className="text-end fw-bold">Total:</td>
+                                                <td className="fw-bold">
+                                                    ${purchaseOrder.inputs.reduce((sum, item) => 
+                                                        sum + (item.UnityPrice || 0) * item.InitialQuantity, 0
+                                                    ).toFixed(2)}
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                )}
-
-                <button onClick={agregarInput} className='button-sum'>Añadir Insumo</button>
-                <button onClick={onClose} className='button-close'>Cancelar</button>
-                <button onClick={enviarOrden} className='button-save'>Guardar Orden</button>
+                    <div className="modal-footer">
+                        <button 
+                            type="button" 
+                            className="btn btn-secondary" 
+                            onClick={onClose}
+                        >
+                            Cancelar
+                        </button>
+                        <button 
+                            type="button" 
+                            className="btn btn-primary" 
+                            onClick={sendPurchaseOrder}
+                            disabled={purchaseOrder.inputs.length === 0 || !purchaseOrder.ID_supplier}
+                        >
+                            Guardar Orden
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );
 }
 
-export default CrearOrdenModal;
+export default CreatePurchaseOrderModal;

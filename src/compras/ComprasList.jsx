@@ -1,70 +1,185 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import DataTable from "react-data-table-component";
 import CrearOrdenModal from "./CrearCompra";
 
 
 const API_COMPRAS = 'http://localhost:8000/api/compras';
+const API_PROVEEDORES = 'http://localhost:8000/api/proveedores';
 
 function Compras(){
-    const [compras, setCompras] = useState([]);
+    const [purchaseOrders, setPurchaseOrders] = useState([]);
+    const [suppliers, setSupplier] = useState([]);
     const [mostrarModal, setMostrarModal] = useState(false);
+    const [pending, setPending] = useState(true);
 
     useEffect(() => {
-        obtenerCompras();
+        const loadData = async () => {
+            try {
+                setPending(true);
+                const [purchaseOrdersResponse, suppliersResponse] = await Promise.all([
+                    axios.get(API_COMPRAS),
+                    axios.get(API_PROVEEDORES)
+                ]);
+                setPurchaseOrders(purchaseOrdersResponse.data);
+                setSupplier(suppliersResponse.data);
+                setPending(false);
+            } catch (error) {
+                console.error("Error al Obtener los datos: ", error);
+                setPending(false);
+            }
+        };
+        loadData();
     }, []);
+    
+    const getNameSupplier = (supplierId) => {
+        const supplier = suppliers.find(s => s.id === supplierId);
+        return supplier ? `${supplier.name}` : 'Proveedor No Encontrado'
+    };
 
-    const obtenerCompras = async () => {
+    const deletePurchaseOrder = async (id) => {
         try {
-            const response = await axios.get(API_COMPRAS);
-            setCompras(response.data);
+            await axios.delete(`${API_COMPRAS}/${id}`);
+            setPurchaseOrders(purchaseOrders.filter(purchaseOrder => purchaseOrder.id !== id));
         } catch (error) {
-            console.error('Error al obtener las compras:', error);
+            console.error('Error al eliminar la Orden de Compra', error);
         }
     }
 
-    const eliminarCompra = async (id) => {
-        try {
-            await axios.delete(`${API_COMPRAS}/${id}`);
-            obtenerCompras(); 
-        } catch (error) {
-            console.error('Error al eliminar compra:', error);
-        }
+    const customStyles = {
+        headCells: {
+            style: {
+                backgroundColor: '#343a40', 
+                color: 'white',
+                fontSize: '16px',
+                fontWeight: 'bold',
+            },
+        },
+        rows: {
+            style: {
+                minHeight: '50px',
+                '&:nth-child(even)': {
+                    backgroundColor: '#f8f9fa',
+                },
+                '&:hover': {
+                    backgroundColor: '#e9ecef !important',
+                },
+            },
+        },
+        pagination: {
+            style: {
+                backgroundColor: '#f8f9fa',
+                borderTop: '1px solid #dee2e6',
+            },
+        },
     };
-    
+
+    const columnas = [
+        {
+            name: 'Numero de Orden',
+            selector: row => row.id,
+            sortable: true,
+        },
+        {
+            name: 'Proveedor',
+            selector: row => `${row.ID_supplier} - ${getNameSupplier(row.ID_supplier)}`,
+            sortable: true,
+        },
+        {
+            name: 'Fecha de la orden',
+            selector: row => row.PurchaseOrderDate,
+            sortable: true,
+        },
+        {
+            name: 'Total Orden de Compra',
+            selector: row => row.PurchaseTotal,
+            sortable: true,
+        },
+        {
+            name:'Acciones',
+            cell: row => (
+                <div className="btn-group" role="group">
+                    <button
+                        onClick={() => deletePurchaseOrder(row.id)}
+                        className="btn btn-danger btn-sm"
+                    >
+                        Eliminar
+                    </button>
+                </div>
+            ),
+            ignoreRowClick: true,
+        }
+    ];
+
+    const paginationOptions = {
+        rowsPerPageText: 'Registros por página:',
+        rangeSeparatorText: 'de',
+        selectAllRowsItem: true,
+        selectAllRowsItemText: 'Todos',
+        noRowsPerPage: false,
+    };
 
     return (
-        <div>
-            <h1>Gestión de Compras</h1>
-            <button onClick={() => setMostrarModal(true)} className="button-new">Crear Compra</button>
+        <div className='container mt-4'>
+            <div className='card'>
+                <div className='card-header bg-primary text-white'>
+                    <h1 className='h4'>Gestión de Compras</h1>
+                </div>
 
-            <h2>Lista de Compras</h2>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>ID Proveedor</th>
-                        <th>Fecha Orden de Compra</th>
-                        <th>Total de la Orden</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {compras.map((compras) => (
-                        <tr key={compras.id}>
-                            <td>{compras.ID_supplier}</td>
-                            <td>{compras.PurchaseOrderDate}</td>
-                            <td>{compras.PurchaseTotal} $</td>
-                            <td>
-                                <button onClick={() => eliminarCompra(compras.id)} className="button-danger">Eliminar</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                <div className='card-body'>
+                    <div className='d-flex justify-content-between mb-3'>
+                        <button 
+                            onClick={() => setMostrarModal(true)} 
+                            className='btn btn-success'
+                        >
+                            <i className="bi bi-plus-circle"></i> Crear Compra
+                        </button>
+                    </div>
+
+                    <DataTable
+                        title="Lista de Pedidos"
+                        columns={columnas}
+                        data={purchaseOrders}
+                        pagination
+                        paginationPerPage={5} 
+                        paginationRowsPerPageOptions={[5, 10, 15, 20]} 
+                        paginationComponentOptions={paginationOptions}
+                        highlightOnHover
+                        pointerOnHover
+                        responsive
+                        striped
+                        customStyles={customStyles}
+                        progressPending={pending}
+                        progressComponent={<div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Cargando...</span>
+                        </div>}
+                        noDataComponent={<div className="alert alert-info">No hay Pedios registrados</div>}
+                    />
+                </div>
+            </div>
+            
 
             {mostrarModal && (
                 <CrearOrdenModal
                     onClose={() => setMostrarModal(false)}
-                    onOrdenCreada={obtenerCompras}
+                    onPurchaseOrderCreated={() => {
+                        const loadData = async () => {
+                            try {
+                                setPending(true);
+                                const [purchaseOrdersResponse, supplierResponse] = await Promise.all([
+                                    axios.get(API_COMPRAS),
+                                    axios.get(API_PROVEEDORES)
+                                ]);
+                                setPurchaseOrders(purchaseOrdersResponse.data);
+                                setSupplier(supplierResponse.data);
+                                setPending(false);
+                            } catch (error) {
+                                console.error('Error al obtener datos:', error);
+                                setPending(false);
+                            }
+                        };
+                        loadData();
+                    }}
                 />
             )}
         </div>

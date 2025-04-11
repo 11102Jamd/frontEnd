@@ -1,68 +1,183 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import CrearPedidoModal from './CrearPedido';
+import DataTable from 'react-data-table-component';
+import CreateOrderModal from './CrearPedido';
 
 const API_PEDIDOS = 'http://localhost:8000/api/pedidos';
+const API_USUARIOS = 'http://localhost:8000/api/usuarios';
 
 function Pedidos() {
-    const [pedidos, setPedidos] = useState([]);
+    const [orders, setOrders] = useState([]);
+    const [users, setUsers] = useState([]);
     const [mostrarModal, setMostrarModal] = useState(false);
+    const [pending, setPending] = useState(true);
 
     useEffect(() => {
-        obtenerPedidos();
+        const loadData = async () => {
+            try {
+                setPending(true);
+                const [ordersResponse, usersResponse] = await Promise.all([
+                    axios.get(API_PEDIDOS),
+                    axios.get(API_USUARIOS)
+                ]);
+                setOrders(ordersResponse.data);
+                setUsers(usersResponse.data);
+                setPending(false);
+            } catch (error) {
+                console.error('Error al obtener datos:', error);
+                setPending(false);
+            }
+        };
+        loadData();
     }, []);
 
-    const obtenerPedidos = async () => {
-        try {
-            const response = await axios.get(API_PEDIDOS);
-            setPedidos(response.data);
-        } catch (error) {
-            console.error('Error al obtener los pedidos:', error);
-        }
+    const getNameUser = (userId) => {
+        const user = users.find(u => u.id === userId);
+        return user ? `${user.name1} ${user.surname1}` : 'Usuario no encontrado';
     };
 
     const eliminarPedido = async (id) => {
         try {
             await axios.delete(`${API_PEDIDOS}/${id}`);
-            obtenerPedidos();
+            setOrders(orders.filter(order => order.id !== id));
         } catch (error) {
             console.error('Error al eliminar pedido:', error);
         }
     };
 
-    return (
-        <div>
-            <h1>Gestión de Pedidos</h1>
-            <button onClick={() => setMostrarModal(true)} className='button-new'>Crear Pedido</button>
+    const customStyles = {
+        headCells: {
+            style: {
+                backgroundColor: '#343a40', 
+                color: 'white',
+                fontSize: '16px',
+                fontWeight: 'bold',
+            },
+        },
+        rows: {
+            style: {
+                minHeight: '50px',
+                '&:nth-child(even)': {
+                    backgroundColor: '#f8f9fa',
+                },
+                '&:hover': {
+                    backgroundColor: '#e9ecef !important',
+                },
+            },
+        },
+        pagination: {
+            style: {
+                backgroundColor: '#f8f9fa',
+                borderTop: '1px solid #dee2e6',
+            },
+        },
+    };
 
-            <h2>Lista de Pedidos</h2>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>ID_Usuario</th>
-                        <th>Fecha de Pedido</th>
-                        <th>Total de Pedido</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {pedidos.map((pedido) => (
-                        <tr key={pedido.id}>
-                            <td>{pedido.ID_users}</td>
-                            <td>{pedido.OrderDate}</td>
-                            <td>{pedido.OrderTotal} $</td>
-                            <td>
-                                <button onClick={() => eliminarPedido(pedido.id)} className='button-danger'>Eliminar</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+    const columnas = [
+        {
+            name: 'Numero de Pedido',
+            selector: row => row.id,
+            sortable: true,
+        },
+        {
+            name: 'Usuario',
+            selector: row => `${row.ID_users} - ${getNameUser(row.ID_users)}`,
+            sortable: true,
+        },
+        {
+            name: 'Fecha de Pedido',
+            selector: row => row.OrderDate,
+            sortable: true,
+        },
+        {
+            name: 'Total de Orden',
+            selector: row => row.OrderTotal,
+            sortable: true,
+        },
+        {
+            name: 'Acciones',
+            cell: row => (
+                <div className="btn-group" role="group">
+                    <button 
+                        onClick={() => eliminarPedido(row.id)} 
+                        className='btn btn-danger btn-sm'
+                    >
+                        Eliminar
+                    </button>
+                </div>
+            ),
+            ignoreRowClick: true,
+        }
+    ];
+
+    const paginationOptions = {
+        rowsPerPageText: 'Registros por página:',
+        rangeSeparatorText: 'de',
+        selectAllRowsItem: true,
+        selectAllRowsItemText: 'Todos',
+        noRowsPerPage: false,
+    };
+
+    return (
+        <div className='container mt-4'>
+            <div className='card'>
+                <div className='card-header bg-primary text-white'>
+                    <h1 className='h4'>Gestión de Pedidos</h1>
+                </div>
+
+                <div className='card-body'>
+                    <div className='d-flex justify-content-between mb-3'>
+                        <button 
+                            onClick={() => setMostrarModal(true)} 
+                            className='btn btn-success'
+                        >
+                            <i className="bi bi-plus-circle"></i> Crear Pedido
+                        </button>
+                    </div>
+
+                    <DataTable
+                        title="Lista de Pedidos"
+                        columns={columnas}
+                        data={orders}
+                        pagination
+                        paginationPerPage={5} 
+                        paginationRowsPerPageOptions={[5, 10, 15, 20]} 
+                        paginationComponentOptions={paginationOptions}
+                        highlightOnHover
+                        pointerOnHover
+                        responsive
+                        striped
+                        customStyles={customStyles}
+                        progressPending={pending}
+                        progressComponent={<div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Cargando...</span>
+                        </div>}
+                        noDataComponent={<div className="alert alert-info">No hay Pedios registrados</div>}
+                    />
+                </div>
+            </div>
 
             {mostrarModal && (
-                <CrearPedidoModal
+                <CreateOrderModal
                     onClose={() => setMostrarModal(false)}
-                    onPedidoCreado={obtenerPedidos}
+                    onOrderCreated={() => {
+                        const loadData = async () => {
+                            try {
+                                setPending(true);
+                                const [ordersResponse, usersResponse] = await Promise.all([
+                                    axios.get(API_PEDIDOS),
+                                    axios.get(API_USUARIOS)
+                                ]);
+                                setOrders(ordersResponse.data);
+                                setUsers(usersResponse.data);
+                                setPending(false);
+                            } catch (error) {
+                                console.error('Error al obtener datos:', error);
+                                setPending(false);
+                            }
+                        };
+                        loadData();
+                    }}
                 />
             )}
         </div>
