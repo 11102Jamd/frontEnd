@@ -20,7 +20,7 @@ function Fabricacion(){
         }
     }
 
-    const eliminarFabricacion = async () => {
+    const eliminarFabricacion = async (id) => {
         try {
             await axios.delete(`${API_FABRICACION}/${id}`);
             obtenerFabricacion();

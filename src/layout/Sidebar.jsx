@@ -1,19 +1,16 @@
 import React from "react";
 import { Link } from 'react-router-dom';
 
+
 function Sidebar() {
     return (
-        <div className="sidebar">
-            <h4 className="mb-4 text-center d-flex flex-column align-items-center h4" style={{
-                color: '#fff',
-                padding: '10px',
-                borderBottom: '1px solid rgba(255,255,255,0.1)'
-            }}>
-                <i className="bi bi-person-circle icono-grande"></i>
-            </h4>
-
-
-            <ul className="nav flex-column">
+        <ul className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <Link className="sidebar-brand d-flex align-items-center justify-content-center" to="/">
+                <div className="sidebar-brand-icon">
+                    <i className="bi bi-person-circle"></i>
+                </div>
+                <div className="sidebar-brand-text mx-3">Pan de Yuca</div>
+            </Link>
             <li className="nav-item">
                 <Link to="/welcome" className="nav-link text-white sidebar-link">
                     <i className="bi bi-house-door me-2"></i> Inicio
@@ -55,9 +52,7 @@ function Sidebar() {
                     <i className="bi bi-gear-fill me-2"></i> Fabricacion
                 </Link>
             </li>
-
-            </ul>
-        </div>
+        </ul>
     );
 }
 

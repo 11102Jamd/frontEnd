@@ -1,6 +1,160 @@
-/* Estilos generales */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* Variables CSS - Color Scheme */
+:root {
+    /* Colores principales */
+    --primary: #4e73df;
+    --primary-dark: #2e59d9;
+    --secondary: #858796;
+    --success: #1cc88a;
+    --info: #36b9cc;
+    --warning: #f6c23e;
+    --danger: #e74a3b;
+    --light: #f8f9fc;
+    --dark: #5a5c69;
+  
+    /* Gradientes */
+    --gradient-primary: linear-gradient(180deg, var(--primary) 10%, #224abe 100%);
+    
+    /* Sombras */
+    --shadow-sm: 0 .125rem .25rem rgba(0,0,0,.075);
+    --shadow: 0 .15rem 1.75rem 0 rgba(58, 59, 69, .15);
+    
+    /* Tipografía */
+    --font-sans-serif: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  }
+  
+  /* Estilos Base para Layout */
+  body {
+    font-family: var(--font-sans-serif);
+    background-color: #f8f9fc;
+    overflow-x: hidden;
+  }
+  
+  #wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+  }
+  
+  /* Sidebar Styles */
+  .sidebar {
+    width: 14rem;
+    background: var(--gradient-primary);
+    min-height: 100vh;
+    transition: all 0.3s;
+    box-shadow: 4px 0 10px rgba(0,0,0,.1);
+  }
+  
+  .sidebar-brand {
+    height: 4.375rem;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 800;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    letter-spacing: 0.05rem;
+    z-index: 1;
+    color: rgba(255,255,255,.8);
+  }
+  
+  .sidebar-divider {
+    border-top: 1px solid rgba(255,255,255,.15);
+    margin: 0 1rem 1rem;
+  }
+  
+  .nav-item {
+    position: relative;
+  }
+  
+  .nav-link {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: rgba(255,255,255,.8);
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  
+  .nav-link:hover {
+    color: white;
+    background: rgba(255,255,255,.1);
+  }
+  
+  .nav-link i {
+    margin-right: 0.5rem;
+  }
+  
+  /* Header Styles */
+  .topbar {
+    height: 4.375rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    background: white;
+  }
+  
+  .topbar .navbar-search {
+    width: 25rem;
+  }
+  
+  .topbar .navbar-search input {
+    font-size: 0.85rem;
+    height: auto;
+  }
+  
+  .topbar .topbar-divider {
+    width: 0;
+    border-right: 1px solid #e3e6f0;
+    height: calc(4.375rem - 2rem);
+    margin: auto 1rem;
+  }
+  
+  .topbar .nav-item .nav-link {
+    height: 4.375rem;
+    display: flex;
+    align-items: center;
+    padding: 0 0.75rem;
+    color: #d1d3e2;
+  }
+  
+  .topbar .nav-item .nav-link:hover {
+    color: #b7b9cc;
+  }
+  
+  /* Main Content Styles */
+  #content-wrapper {
+    width: 100%;
+    overflow-x: hidden;
+  }
+  
+  #content {
+    flex: 1 0 auto;
+  }
+  
+  .container-fluid {
+    padding: 2rem;
+  }
+  
+  /* Footer Styles */
+  .sticky-footer {
+    flex-shrink: 0;
+    background-color: white;
+    line-height: 1;
+    padding: 1.5rem 0;
+    box-shadow: 0 -0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+  }
+  
+  /* Responsive Adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+    width: 6.5rem;
+    overflow: hidden;
+    }
+    
+    .sidebar .nav-item .nav-link span {
+    display: none;
+    }
+    
+    .sidebar .sidebar-brand .sidebar-brand-text {
+    display: none;
+    }
 }
 .header{
     text-align: center;
@@ -15,6 +169,10 @@ body {
     background-color: #2d3436;
     height: 40px;
     width: 100%;
+}
+.bg-custom {
+    background-color: #4e73df; /* Azul de ejemplo (como el sidebar de Bootstrap) */
+    color: white; /* Texto blanco para contraste */
 }
 .root{
     width: 1600px;
@@ -130,35 +288,6 @@ body {
     align-items: center; 
 }
 
-.title{
-    display: flex;
-    justify-content: center; 
-    align-items: center; 
-}
-.subtitle{
-    display: flex;
-    justify-content: center; 
-    align-items: center;
-}
-.btn-new-user{
-    margin-left: 100px;
-}
-
-.btn-new-product{
-    margin-left: 255px;
-}
-.user-table, th, td{
-    border: 3;
-    text-align: center;
-    padding: 15px;
-}
-th{
-    background-color: #2d3436;
-    color: #f5f6fa;
-}
-tr:hover{
-    background-color: gray;
-}
 
 .form-modal{
     position: fixed;
@@ -174,149 +303,8 @@ tr:hover{
     border-radius: 8px;
     width: 300px;
 }
-/*Se aplica el mismo estilo a formularios de muchos Productos o Insumos*/
-
-.form-row {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000; 
-    background-color: #2d3436;
-    color: #f5f6fa;
-    padding: 20px;
-    border: 1px solid #ccc;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    border-radius: 8px;
-    width: 700px;
-    letter-spacing: 5;
-}
-.form-row label {
-    margin-left: 10px;
-    margin-right: 10px; 
-    min-width: 130px;  
-    display: inline-block;
-}
-
-.form-row select,
-.form-row input {
-    flex: 1; 
-    width: 150px;
-    height: 40px;
-    padding: 8px;
-    font-size: 14px;
-}
-/*Formulario estilo css compras*/
-
-.form-compras {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000; 
-    background-color: #2d3436;
-    color: #f5f6fa;
-    padding: 20px;
-    border: 1px solid #ccc;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    border-radius: 8px;
-    width: 500px;
-    letter-spacing: 5;
-}
-
-.form-compras label {
-    margin-left: 10px;
-    margin-right: 10px; 
-    min-width: 130px;  
-    display: inline-block;
-}
 
 
-/* Estilo para botones y entradas */
-input{
-    width: 100%;
-    height: 20px;
-    border: 2px solid white;
-    padding: 12px 20px;
-    margin: 8px 0;
-    box-sizing: border-box;
-}
-
-select{
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    border: none;
-    border-radius: 4px;
-    background-color: #f1f1f1;
-}
-.button-save{
-    background-color: #1e88e5;
-    color: #f5f6fa;
-    padding: 12px 20px;
-    margin: 8px 0;
-    box-sizing: border-box;
-}
-
-.button-save:hover{
-    background-color: #90caf9;
-}
-
-.button-close{
-    background-color: #C70039;
-    color: #f5f6fa;
-    padding: 12px 20px;
-    margin: 8px 0;
-    box-sizing: border-box;
-}
-.button-close:hover{
-    background-color: #FF5733;
-}
-
-.button-new{
-    background-color: #27ae60;
-    color: #f5f6fa;
-    padding: 12px 20px;
-    margin: 8px 0;
-    box-sizing: border-box;
-}
-
-.button-new:hover{
-    background-color: #abebc6;
-}
-
-.button-sum{
-    background-color: #27ae60;
-    color: #f5f6fa;
-    padding: 12px 20px;
-    margin: 8px 0;
-    box-sizing: border-box;
-}
-
-.button-sum:hover{
-    background-color: #abebc6;
-}
-
-.button-danger{
-    background-color:  #c0392b;
-    color: #f5f6fa;
-    padding: 12px 20px;
-    margin: 8px 0;
-    box-sizing: border-box;
-}
-.button-danger:hover{
-    background-color: #f5b7b1;
-}
-.button-edit{
-    background-color: #f1c40f;
-    color: #f5f6fa;
-    padding: 12px 20px;
-    margin: 8px 0;
-    box-sizing: border-box;
-}
-.button-edit:hover{
-    background-color: #f7dc6f;
-}
 
 
 

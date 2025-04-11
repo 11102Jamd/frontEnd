@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CrearProductoModal from './CrearProducto';
 import EditarProductoModal from './EditarProducto';
-
+import DataTable from 'react-data-table-component';
 const API_PRODUCTOS = 'http://localhost:8000/api/productos';
 
 function Productos() {
