@@ -276,35 +276,5 @@
     font-weight: bold;
     background-color: rgba(255, 255, 255, 0.1);
 }
-/* Estilos para el Usuario */
-.content-list{ 
-    height: 900px; 
-    border-style: double;
-}
-.list{
-    overflow-x: auto;
-    display: flex;
-    justify-content: center; 
-    align-items: center; 
-}
-
-
-.form-modal{
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000; 
-    background-color: #2d3436;
-    color: #f5f6fa;
-    padding: 20px;
-    border: 1px solid #ccc;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    border-radius: 8px;
-    width: 300px;
-}
-
-
-
 
 

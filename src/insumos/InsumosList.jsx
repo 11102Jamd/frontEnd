@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import axios from 'axios';
-import CrearInsumoModal from './CrearInsumo';
-import EditarInsumoModal from './EditarInusmo';
+import DataTable from 'react-data-table-component';
+import CreateInputModal from './CrearInsumo';
+import EditInputModal from './EditarInusmo';
 
 const API_INSUMOS = 'http://localhost:8000/api/insumos';
 
 function Insumos() {
     const [insumo, setInsumos] = useState([]);
     const [mostrarModal, setMostrarModal] = useState(false);
-    const [paginaActual, setPaginaActual] = useState(1);
     const [insumoSeleccionado, setInsumoSeleccionado] = useState(null);
-    const insumosPorPagina = 5;
+    const [pending, setPending] = useState(true);
 
     useEffect(() => {
         obtenerInsumos();
@@ -18,10 +18,13 @@ function Insumos() {
 
     const obtenerInsumos = async () => {
         try {
+            setPending(true);
             const response = await axios.get(API_INSUMOS);
             setInsumos(response.data);
+            setPending(false);
         } catch (error) {
             console.error('Error al obtener los Insumos:', error);
+            setPending(false);
         }
     };
 
@@ -34,75 +37,149 @@ function Insumos() {
         }
     };
 
-    const indiceUltimoInsumo = paginaActual * insumosPorPagina;
-    const indicePrimerInsumo = indiceUltimoInsumo - insumosPorPagina;
-    const insumosActuales = insumo.slice(indicePrimerInsumo, indiceUltimoInsumo);
-    const totalPaginas = Math.ceil(insumo.length / insumosPorPagina);
+    const customStyles = {
+        headCells: {
+            style: {
+                backgroundColor: '#343a40', 
+                color: 'white',
+                fontSize: '16px',
+                fontWeight: 'bold',
+            },
+        },
+        rows: {
+            style: {
+                minHeight: '50px',
+                '&:nth-child(even)': {
+                    backgroundColor: '#f8f9fa', // Color claro alterno
+                },
+                '&:hover': {
+                    backgroundColor: '#e9ecef !important', // Color hover
+                },
+            },
+        },
+        pagination: {
+            style: {
+                backgroundColor: '#f8f9fa',
+                borderTop: '1px solid #dee2e6',
+            },
+        },
+    };
 
-    const cambiarPagina = (numeroPagina) => {
-        setPaginaActual(numeroPagina);
+    const columnas = [
+        {
+            name: 'Insumo',
+            selector: row => row.InputName,
+            sortable: true,
+        },
+        {
+            name: 'Cantidad Inicial',
+            selector: row => row.InitialQuantity,
+            sortable: true,
+        },
+        {
+            name: 'Kg/Lb',
+            selector: row => row.UnitMeasurement,
+            sortable: true,
+        },
+        {
+            name: 'Stock',
+            selector: row => row.CurrentStock,
+            sortable: true,
+        },
+        {
+            name: 'g',
+            selector: row => row.UnitMeasurementGrams,
+            sortable: true,
+        },
+        {
+            name: 'Precio Unidad',
+            selector: row => row.UnityPrice,
+            sortable: true,
+        },
+        {
+            name: 'Acciones',
+            cell: row => (
+                <div className="btn-group" role="group">
+                    <button 
+                        onClick={() => eliminarInsumos(row.id)} 
+                        className='btn btn-danger btn-sm'
+                    >
+                        Eliminar
+                    </button>
+                    <button 
+                        onClick={() => {
+                            console.log('Editando insumo:', row); 
+                            setInsumoSeleccionado(row);
+                        }} 
+                        className='btn btn-primary btn-sm ms-2'
+                    >
+                        Editar
+                    </button>
+                </div>
+            ),
+            ignoreRowClick: true,
+        }
+    ];
+
+    const paginationOptions = {
+        rowsPerPageText: 'Registros por página:',
+        rangeSeparatorText: 'de',
+        selectAllRowsItem: true,
+        selectAllRowsItemText: 'Todos',
+        noRowsPerPage: false,
     };
 
     return (
-        <div>
-            <h1>Gestión de Insumos</h1>
-            <button onClick={() => setMostrarModal(true)} className='button-new'>Crear Insumo</button>
+        <div className='container mt-4'>
+            <div className='card'>
+                <div className='card-header bg-primary text-white'>
+                    <h1 className='h4'>Gestión de Usuarios</h1>
+                </div>
 
-            <h2>Lista de Insumos</h2>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>Nombre Insumo</th>
-                        <th>Cantidad Inicial</th>
-                        <th>Unidad de Medida</th>
-                        <th>Stock Actual</th>
-                        <th>Gramos</th>
-                        <th>Precio Unidad</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {insumosActuales.map((insumo) => (
-                        <tr key={insumo.id}>
-                            <td>{insumo.InputName}</td>
-                            <td>{insumo.InitialQuantity}</td>
-                            <td>{insumo.UnitMeasurement}</td>
-                            <td>{insumo.CurrentStock}</td>
-                            <td>{insumo.UnitMeasurementGrams}</td>
-                            <td>{insumo.UnityPrice} $</td>
-                            <td>
-                                <button onClick={() => eliminarInsumos(insumo.id)} className='button-danger'>Eliminar</button>
-                                <button onClick={() => setInsumoSeleccionado(insumo)} className='button-edit'>Editar</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                <div className='card-body'>
+                    <div className='d-flex justify-content-between mb-3'>
+                        <button 
+                            onClick={() => setMostrarModal(true)} 
+                            className='btn btn-success'
+                        >
+                            <i className="bi bi-plus-circle"></i> Crear Insumo
+                        </button>
+                    </div>
 
-            <div className="paginacion">
-                {Array.from({ length: totalPaginas }, (_, i) => (
-                    <button
-                        key={i}
-                        onClick={() => cambiarPagina(i + 1)}
-                        className={paginaActual === i + 1 ? 'pagina-activa' : ''}
-                    >
-                        {i + 1}
-                    </button>
-                ))}
+                    <DataTable
+                        title="Lista de Insumos"
+                        columns={columnas}
+                        data={insumo}
+                        pagination
+                        paginationPerPage={5} 
+                        paginationRowsPerPageOptions={[5, 10, 15, 20]} 
+                        paginationComponentOptions={paginationOptions}
+                        highlightOnHover
+                        pointerOnHover
+                        responsive
+                        striped
+                        customStyles={customStyles}
+                        progressPending={pending}
+                        progressComponent={<div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Cargando...</span>
+                        </div>}
+                        noDataComponent={<div className="alert alert-info">No hay usuarios registrados</div>}
+                    />
+                </div>
             </div>
 
             {mostrarModal && (
-                <CrearInsumoModal
+                <CreateInputModal
                     onClose={() => setMostrarModal(false)}
-                    onInsumoCreado={obtenerInsumos}
+                    onInputCreated={obtenerInsumos}
                 />
             )}
 
             {insumoSeleccionado && (
-                <EditarInsumoModal
-                    insumo={insumoSeleccionado}
+                <EditInputModal
+                    input={insumoSeleccionado}
                     onClose={() => setInsumoSeleccionado(null)}
-                    onInsumoActualizado={obtenerInsumos}
+                    onInputUpdated={obtenerInsumos}
                 />
             )}
         </div>

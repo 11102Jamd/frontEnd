@@ -3,20 +3,20 @@ import axios from 'axios';
 
 const API_PRODUCTOS = 'http://localhost:8000/api/productos';
 
-function CrearProductoModal({ onClose, onProductoCreado }) {
-    const [nuevoProducto, setNuevoProducto] = useState({
+function CreateProductModal({ onClose, onProductCreated }) {
+    const [newProduct, setNewProduct] = useState({
         ProductName: '',
         InitialQuantity: '',
         CurrentStock: '',
         UnityPrice: ''
     });
 
-    const crearProducto = async () => {
+    const createProduct = async () => {
         try {
-            await axios.post(API_PRODUCTOS, nuevoProducto);
-            onProductoCreado();
+            await axios.post(API_PRODUCTOS, newProduct);
+            onProductCreated();
             onClose();
-            setNuevoProducto({
+            setNewProduct({
                 ProductName: '',
                 InitialQuantity: '',
                 CurrentStock: '',
@@ -28,20 +28,73 @@ function CrearProductoModal({ onClose, onProductoCreado }) {
     };
 
     return (
-        <div className="form-modal">
-            <h2>Crear Producto</h2>
-            <input type="text" name="ProductName" placeholder="Nombre Producto" value={nuevoProducto.ProductName} onChange={(e) => setNuevoProducto({ ...nuevoProducto, ProductName: e.target.value })} required/>
-            <br />
-            <input type="number" name="InitialQuantity" placeholder="Cantidad Inicial" value={nuevoProducto.InitialQuantity} onChange={(e) => setNuevoProducto({ ...nuevoProducto, InitialQuantity: e.target.value })} required/>
-            <br />
-            <input type="number" name="CurrentStock" placeholder="Stock Actual" value={nuevoProducto.CurrentStock} onChange={(e) => setNuevoProducto({ ...nuevoProducto, CurrentStock: e.target.value })} required/>
-            <br />
-            <input type="number" name="UnityPrice" placeholder="Precio Unidad" value={nuevoProducto.UnityPrice} onChange={(e) => setNuevoProducto({ ...nuevoProducto, UnityPrice: e.target.value })} required/>
-            <br />
-            <button onClick={crearProducto} className='button-save'>Guardar</button>
-            <button onClick={onClose} className='button-close'>Cerrar</button>
+        <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+            <div className="modal-dialog modal-lg">
+                <div className="modal-content">
+                    <div className="modal-header bg-primary text-white">
+                        <h5 className="modal-title">Crear Nuevo Producto</h5>
+                        <button type="button" className="btn-close btn-close-white" onClick={onClose}></button>
+                    </div>
+                    <div className="modal-body">
+                        <div className="mb-3">
+                            <label htmlFor="ProductName" className="form-label">Producto</label>
+                            <input 
+                                type="text" 
+                                className="form-control form-control-lg" 
+                                id="ProductName" 
+                                value={newProduct.ProductName} 
+                                onChange={(e) => setNewProduct({ ...newProduct, ProductName: e.target.value })} 
+                                required 
+                            />
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="InitialQuantity" className="form-label">Cantidad Inicial</label>
+                            <input 
+                                type="number" 
+                                className="form-control form-control-lg" 
+                                id="InitialQuantity" 
+                                value={newProduct.InitialQuantity} 
+                                onChange={(e) => setNewProduct({ ...newProduct, InitialQuantity: e.target.value })} 
+                                required 
+                            />
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="CurrentStock" className="form-label">Stock Actual</label>
+                            <input 
+                                type="number" 
+                                className="form-control form-control-lg" 
+                                id="CurrentStock" 
+                                value={newProduct.CurrentStock} 
+                                onChange={(e) => setNewProduct({ ...newProduct, CurrentStock: e.target.value })} 
+                                required 
+                            />
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="UnityPrice" className="form-label">Precio por Unidad</label>
+                            <input 
+                                type="number" 
+                                className="form-control form-control-lg" 
+                                id="UnityPrice" 
+                                value={newProduct.UnityPrice} 
+                                onChange={(e) => setNewProduct({ ...newProduct, UnityPrice: e.target.value })} 
+                                required 
+                            />
+                        </div>
+                        
+                        
+                    </div>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary" onClick={onClose}>
+                            Cerrar
+                        </button>
+                        <button type="button" className="btn btn-primary" onClick={createProduct}>
+                            Guardar Producto
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
 
-export default CrearProductoModal;
+export default CreateProductModal;

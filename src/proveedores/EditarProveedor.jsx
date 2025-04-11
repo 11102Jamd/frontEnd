@@ -3,95 +3,87 @@ import axios from 'axios';
 
 const API_PROVEEDOR = 'http://localhost:8000/api/proveedores';
 
-function EditarProveedorModal({ proveedor, onClose, onProveedorActualizado }) {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        Addres: '',
-        Phone: ''
-    });
+function EditSupplierModal({ supplier, onClose, onSupplierUpdated }) {
+    const [supplierUpdate, setSupplierUpdate] = useState(supplier);
 
-    const [errors, setErrors] = useState({});
-
-    useEffect(() => {
-        if (proveedor) {
-            setFormData({
-                name: proveedor.name || '',
-                email: proveedor.email || '',
-                Addres: proveedor.Addres || '',
-                Phone: proveedor.Phone || ''
-            });
-        }
-    }, [proveedor]);
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-        if (errors[e.target.name]) {
-            setErrors(prev => {
-                const newErrors = {...prev};
-                delete newErrors[e.target.name];
-                return newErrors;
-            });
-        }
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const updateSupplier = async () => {
         try {
-            const payload = {
-                name: formData.name,
-                email: formData.email,
-                Addres: formData.Addres,
-                Phone: formData.Phone,
-            };
-
-            const response = await axios.put(`${API_PROVEEDOR}/${proveedor.id}`, payload);
-            onProveedorActualizado();
+            await axios.put(`${API_PROVEEDOR}/${supplier.id}`, supplierUpdate);
+            onSupplierUpdated();
             onClose();
         } catch (error) {
-            if (error.response?.status === 422) {
-                setErrors(error.response.data.errors || {});
-                alert('Error de validación: ' + 
-                    (error.response.data.message || 'Verifica los datos ingresados'));
-            } else {
-                console.error('Error al actualizar usuario:', error);
-                alert('Error inesperado al actualizar el usuario');
-            }
+            console.error("Error al Actualizar el proveedor: ",error);
         }
-    };
+    }
 
     return (
-        <div className="modal">
-            <div className="form-modal">
-                <h2>Editar Proveedor</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Nombre" className={errors.name1 ? 'error-field' : ''}/>
-                        {errors.name && <div className="error-message">{errors.name[0]}</div>}
+        <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+            <div className="modal-dialog modal-lg">
+                <div className="modal-content">
+                    <div className="modal-header bg-primary text-white">
+                        <h5 className="modal-title">Editar Proveedor</h5>
+                        <button type="button" className="btn-close btn-close-white" onClick={onClose}></button>
                     </div>
+                    <div className="modal-body">
+                        <div className="mb-3">
+                            <label className="form-label">Proveedor</label>
+                            <input 
+                                type="text" 
+                                className="form-control form-control-lg" 
+                                id='name'
+                                value={supplierUpdate.name} 
+                                onChange={(e) => setSupplierUpdate({ ...supplierUpdate, name: e.target.value })} 
+                                required 
+                            />
+                        </div>
+                        
+                        <div className="mb-3">
+                            <label htmlFor="email" className="form-label">Correo Electrónico</label>
+                            <input 
+                                type="email" 
+                                className="form-control form-control-lg" 
+                                id="email" 
+                                value={supplierUpdate.email} 
+                                onChange={(e) => setSupplierUpdate({ ...supplierUpdate, email: e.target.value })} 
+                                required 
+                            />
+                        </div>
 
-                    <div className="form-group">
-                        <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Correo" className={errors.email ? 'error-field' : ''}/>
-                        {errors.email && <div className="error-message">{errors.email[0]}</div>}
-                    </div>
+                        <div className="mb-3">
+                            <label htmlFor="Addres" className="form-label">Direccion</label>
+                            <input 
+                                type="text" 
+                                className="form-control form-control-lg" 
+                                id="Addres" 
+                                value={supplierUpdate.Addres} 
+                                onChange={(e) => setSupplierUpdate({ ...supplierUpdate, Addres: e.target.value })} 
+                            />
+                        </div>
 
-                    <div className="form-group">
-                        <input type="text" name="Addres" value={formData.Addres} onChange={handleChange} placeholder="Direccion" className={errors.Addres ? 'error-field' : ''}/>
-                        {errors.Addres && <div className="error-message">{errors.Addres[0]}</div>}
+                        <div className="mb-3">
+                            <label htmlFor="Phone" className="form-label">Telefono</label>
+                            <input 
+                                type="number" 
+                                className="form-control form-control-lg" 
+                                id="Phone" 
+                                value={supplierUpdate.Phone} 
+                                onChange={(e) => setSupplierUpdate({ ...supplierUpdate, Phone: e.target.value })} 
+                            />
+                        </div>
+                        
                     </div>
-                    
-                    <div className="form-group">
-                        <input type="number" name="Phone" value={formData.Phone} onChange={handleChange} placeholder="Telefono" />
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary" onClick={onClose}>
+                            Cancelar
+                        </button>
+                        <button type="button" className="btn btn-primary" onClick={updateSupplier}>
+                            Guardar Cambios
+                        </button>
                     </div>
-                    
-                    <div className="form-actions">
-                        <button type="submit" className="button-save">Guardar Cambios</button>
-                        <button type="button" onClick={onClose} className="button-close">Cancelar</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     );
 }
 
-export default EditarProveedorModal;
+export default EditSupplierModal;
