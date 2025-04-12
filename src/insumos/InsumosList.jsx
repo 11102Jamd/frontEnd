@@ -133,7 +133,7 @@ function Insumos() {
         <div className='container mt-4'>
             <div className='card'>
                 <div className='card-header bg-primary text-white'>
-                    <h1 className='h4'>Gestión de Usuarios</h1>
+                    <h1 className='h4'>Gestión de Insumos</h1>
                 </div>
 
                 <div className='card-body'>
