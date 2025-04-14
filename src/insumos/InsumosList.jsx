@@ -72,16 +72,6 @@ function Insumos() {
             sortable: true,
         },
         {
-            name: 'Cantidad Inicial',
-            selector: row => row.InitialQuantity,
-            sortable: true,
-        },
-        {
-            name: 'Kg/Lb',
-            selector: row => row.UnitMeasurement,
-            sortable: true,
-        },
-        {
             name: 'Stock',
             selector: row => row.CurrentStock,
             sortable: true,
