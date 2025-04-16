@@ -72,18 +72,29 @@ function Insumos() {
             sortable: true,
         },
         {
-            name: 'Stock',
-            selector: row => row.CurrentStock,
-            sortable: true,
-        },
-        {
-            name: 'g',
-            selector: row => row.UnitMeasurementGrams,
-            sortable: true,
-        },
-        {
             name: 'Precio Unidad',
             selector: row => row.UnityPrice,
+            sortable: true,
+        },
+        {
+            name: 'Cantidad Inicial',
+            selector: row => {
+                const lastOrder = row.input_orders?.[0];
+                return lastOrder ? `${lastOrder.InitialQuantity} ${lastOrder.UnitMeasurement}`: 'N/A'
+            },
+            sortable: true,
+        },
+        {
+            name: 'Precio Cantidad',
+            selector: row => {
+                const lastOrder = row.input_orders?.[0];
+                return lastOrder ? `${lastOrder.PriceQuantity}`: 'N/A'
+            },
+            sortable: true,
+        },
+        {
+            name: 'Stock',
+            selector: row => `${row.CurrentStock} ${row.UnitMeasurementGrams}`,
             sortable: true,
         },
         {

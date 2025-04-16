@@ -121,8 +121,6 @@ function Usuarios() {
                 </div>
             ),
             ignoreRowClick: true,
-            allowOverflow: true,
-            button: true,
         },
     ];
 

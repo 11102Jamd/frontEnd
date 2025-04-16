@@ -22,6 +22,7 @@ function CreateManufacturingModal({ onClose, onManufacturingCreated }) {
 
     const [selectedInput, setSelectedInput] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [backendCalculatedPrices, setBackendCalculatedPrices] = useState({});
 
     useEffect(() => {
         const fetchData = async () => {
@@ -110,9 +111,16 @@ function CreateManufacturingModal({ onClose, onManufacturingCreated }) {
                     UnitMeasurement: recipe.UnitMeasurement
                 }))
             });
+
+            // Guardamos los precios calculados por el backend
+            const calculatedPrices = {};
+            response.data.Fabricacion.recipes.forEach(recipe => {
+                calculatedPrices[recipe.ID_inputs] = recipe.PriceQuantitySpent;
+            });
+            setBackendCalculatedPrices(calculatedPrices);
             
             alert("Manufacturing created successfully");
-            onManufacturingCreated?.(response.data);
+            onManufacturingCreated?.(response.data.Fabricacion);
             onClose();
         } catch (error) {
             console.error("Error creating manufacturing:", error.response?.data || error.message);
@@ -183,19 +191,19 @@ function CreateManufacturingModal({ onClose, onManufacturingCreated }) {
                         {/* Inputs section */}
                         <div className="card mb-4">
                             <div className="card-header bg-light">
-                                <h6 className="mb-0">Add Inputs (Recipe)</h6>
+                                <h6 className="mb-0">Añadir Insumo (Recipe)</h6>
                             </div>
                             <div className="card-body">
                                 <div className="row g-3">
                                     <div className="col-md-5">
-                                        <label htmlFor="ID_inputs" className="form-label">Input</label>
+                                        <label htmlFor="ID_inputs" className="form-label">Insumo</label>
                                         <select 
                                             className="form-select"
                                             id="ID_inputs"
                                             value={newRecipe.ID_inputs}
                                             onChange={handleSelectInput}
                                         >
-                                            <option value="">Select an input</option>
+                                            <option value="">Seleccione el insumo</option>
                                             {inputs.map(input => (
                                                 <option key={input.id} value={input.id}>
                                                     {input.InputName}
@@ -204,7 +212,7 @@ function CreateManufacturingModal({ onClose, onManufacturingCreated }) {
                                         </select>
                                     </div>
                                     <div className="col-md-3">
-                                        <label htmlFor="AmountSpent" className="form-label">Amount</label>
+                                        <label htmlFor="AmountSpent" className="form-label">Cantidad</label>
                                         <input 
                                             type="number" 
                                             className="form-control"
@@ -218,7 +226,7 @@ function CreateManufacturingModal({ onClose, onManufacturingCreated }) {
                                         />
                                     </div>
                                     <div className="col-md-2">
-                                        <label htmlFor="UnitMeasurement" className="form-label">Unit</label>
+                                        <label htmlFor="UnitMeasurement" className="form-label">Unidad</label>
                                         <select 
                                             className="form-select"
                                             id="UnitMeasurement"
@@ -227,8 +235,6 @@ function CreateManufacturingModal({ onClose, onManufacturingCreated }) {
                                             onChange={handleRecipeChange}
                                         >
                                             <option value="g">Grams (g)</option>
-                                            <option value="Kg">Kilograms (Kg)</option>
-                                            <option value="lb">Pounds (lb)</option>
                                         </select>
                                     </div>
                                     <div className="col-md-2 d-flex align-items-end">
@@ -284,12 +290,11 @@ function CreateManufacturingModal({ onClose, onManufacturingCreated }) {
                                             <tbody>
                                                 {manufacturing.recipes.map((item, index) => {
                                                     const input = inputs.find(i => i.id === parseInt(item.ID_inputs));
-                                                    const cost = (item.AmountSpent / 1000) * (input?.UnityPrice || 0);
+                                                    const calculatedPrice = backendCalculatedPrices[item.ID_inputs];
                                                     return (
                                                         <tr key={index}>
                                                             <td>{input?.InputName || `Input ID: ${item.ID_inputs}`}</td>
                                                             <td>{item.AmountSpent}</td>
-                                                            <td>${cost.toFixed(2)}</td>
                                                             <td>
                                                                 <button 
                                                                     onClick={() => removeRecipe(index)}
@@ -307,10 +312,9 @@ function CreateManufacturingModal({ onClose, onManufacturingCreated }) {
                                                 <tr>
                                                     <td colSpan="2" className="text-end fw-bold">Total Estimated Cost:</td>
                                                     <td className="fw-bold">
-                                                        ${manufacturing.recipes.reduce((sum, item) => {
-                                                            const input = inputs.find(i => i.id === parseInt(item.ID_inputs));
-                                                            return sum + ((item.AmountSpent / 1000) * (input?.UnityPrice || 0));
-                                                        }, 0).toFixed(2)}
+                                                        {Object.values(backendCalculatedPrices).length > 0
+                                                            ? `$${Object.values(backendCalculatedPrices).reduce((sum, price) => sum + price, 0).toFixed(2)}`
+                                                            : 'N/A'}
                                                     </td>
                                                     <td></td>
                                                 </tr>
