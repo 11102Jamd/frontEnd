@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 import CrearOrdenModal from "./CrearCompra";
-
+import Swal from "sweetalert2";
 
 const API_COMPRAS = 'http://localhost:8000/api/compras';
 const API_PROVEEDORES = 'http://localhost:8000/api/proveedores';
@@ -26,6 +26,11 @@ function Compras(){
                 setPending(false);
             } catch (error) {
                 console.error("Error al Obtener los datos: ", error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'No se pudieron cargar los datos iniciales',
+                    icon: 'error'
+                });
                 setPending(false);
             }
         };

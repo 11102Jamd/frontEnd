@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const API_INSUMOS = 'http://localhost:8000/api/insumos';
 
@@ -9,10 +10,20 @@ function EditInputModal({ input, onClose, onInputUpdated }) {
     const updateInput = async () => {
         try {
             await axios.put(`${API_INSUMOS}/${input.id}`, inputUpdate);
+            await Swal.fire({
+                title: '¡Éxito!',
+                text: 'Insumo Actualizado exitosamente',
+                icon: 'success'
+            });
             onInputUpdated();
             onClose();
         } catch (error) {
-            console.error("Error al Actualizar el usuario: ", error)
+            console.error("Error al Actualizar el usuario: ", error);
+            Swal.fire({
+                title: 'Error',
+                text: 'No se pudo Actualizar el usuario',
+                icon: 'error'
+            });
         }
     }
 

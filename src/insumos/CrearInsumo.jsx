@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const API_INSUMOS = 'http://localhost:8000/api/insumos';
 
@@ -11,6 +12,11 @@ function CreateInputModal({ onClose, onInputCreated }){
     const createInput = async () => {
         try {
             await axios.post(API_INSUMOS, newInput);
+            await Swal.fire({
+                title: '¡Éxito!',
+                text: 'Insumo creado exitosamente',
+                icon: 'success'
+            });
             onInputCreated();
             onClose();
             setNewInput({

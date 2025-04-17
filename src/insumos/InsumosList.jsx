@@ -3,6 +3,7 @@ import axios from 'axios';
 import DataTable from 'react-data-table-component';
 import CreateInputModal from './CrearInsumo';
 import EditInputModal from './EditarInusmo';
+import Swal from 'sweetalert2';
 
 const API_INSUMOS = 'http://localhost:8000/api/insumos';
 
@@ -29,11 +30,34 @@ function Insumos() {
     };
 
     const eliminarInsumos = async (id) => {
-        try {
-            await axios.delete(`${API_INSUMOS}/${id}`);
-            obtenerInsumos();
-        } catch (error) {
-            console.error('Error al eliminar el Insumo:', error);
+        const result = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡No podrás revertir esta acción!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                await axios.delete(`${API_INSUMOS}/${id}`);
+                await Swal.fire({
+                    title: '¡Eliminado!',
+                    text:'El insumo ha sido eliminado.',
+                    icon: 'success'
+                });
+                obtenerInsumos();
+            } catch (error) {
+                console.error('Error al eliminar el Insumo:', error);
+                Swal.fire(
+                    'Error',
+                    'No se pudo eliminar el insumo',
+                    'error'
+                );
+            }
         }
     };
 

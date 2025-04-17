@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const API_ORDENES = 'http://localhost:8000/api/compras';
 const API_PROVEEDORES = 'http://localhost:8000/api/proveedores';
@@ -36,6 +37,11 @@ function CreatePurchaseOrderModal({ onClose, onPurchaseOrderCreated }) {
                 setLoading(false);
             } catch (error) {
                 console.error("Error cargando datos:", error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'No se pudieron cargar los datos iniciales',
+                    icon: 'error'
+                });
                 setLoading(false);
             }
         };
@@ -49,7 +55,6 @@ function CreatePurchaseOrderModal({ onClose, onPurchaseOrderCreated }) {
         const input = inputs.find(i => i.id === parseInt(selectedId));
         setSelectInput(input);
         
-        // Si el insumo tiene precio, lo sugerimos automáticamente
         if (input && input.UnityPrice) {
             setNewInput(prev => ({
                 ...prev,
@@ -60,7 +65,11 @@ function CreatePurchaseOrderModal({ onClose, onPurchaseOrderCreated }) {
 
     const agregarInput = () => {
         if (!newInput.ID_input || !newInput.InitialQuantity || !newInput.UnitMeasurement || !newInput.UnityPrice) {
-            alert("Todos los campos del insumo son obligatorios.");
+            Swal.fire({
+                title: 'Campos incompletos',
+                text: 'Todos los campos del insumo son obligatorios.',
+                icon: 'warning'
+            });
             return;
         }
 
@@ -76,11 +85,10 @@ function CreatePurchaseOrderModal({ onClose, onPurchaseOrderCreated }) {
             inputs: [...purchaseOrder.inputs, inputToAdd] 
         });
 
-        // Resetear el formulario pero mantener la unidad de medida
         setNewInput({
             ID_input: '',
             InitialQuantity: '',
-            UnitMeasurement: newInput.UnitMeasurement, // Mantener la última unidad usada
+            UnitMeasurement: newInput.UnitMeasurement,
             UnityPrice: ''
         });
         setSelectInput(null);
@@ -102,18 +110,30 @@ function CreatePurchaseOrderModal({ onClose, onPurchaseOrderCreated }) {
 
     const sendPurchaseOrder = async () => {
         if (!purchaseOrder.ID_supplier || !purchaseOrder.PurchaseOrderDate || purchaseOrder.inputs.length === 0) {
-            alert("Faltan datos obligatorios o insumos.");
+            Swal.fire({
+                title: 'Datos incompletos',
+                text: 'Faltan datos obligatorios o insumos.',
+                icon: 'warning'
+            });
             return;
         }
 
         try {
             const response = await axios.post(API_ORDENES, purchaseOrder);
-            alert("Orden creada exitosamente");
+            await Swal.fire({
+                title: '¡Éxito!',
+                text: 'Orden creada exitosamente',
+                icon: 'success'
+            });
             onPurchaseOrderCreated?.(response.data);
             onClose();
         } catch (error) {
             console.error("Error al crear orden:", error.response?.data || error.message);
-            alert(`Error: ${error.response?.data?.message || error.message}`);
+            Swal.fire({
+                title: 'Error',
+                text: error.response?.data?.message || error.message || 'Error al crear la orden',
+                icon: 'error'
+            });
         }
     };
 
